@@ -38,6 +38,11 @@ public class CsvWriterImpl implements CsvWriter {
             return;
         }
 
+        writeToFile(path, titleValues, titles, titlesLine, firstTitle);
+    }
+
+    private void writeToFile(String path, Map<String, List<String>> titleValues, List<String> titles,
+                             String titlesLine, String firstTitle) throws IOException {
         try (final FileWriter writer = new FileWriter(path)) {
             writer.append(titlesLine);
             writer.append("\n");
