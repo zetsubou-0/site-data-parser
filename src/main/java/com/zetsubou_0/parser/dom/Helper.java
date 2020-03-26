@@ -9,8 +9,35 @@ public interface Helper {
     String HREF = "href";
     String SRC = "src";
 
+    /**
+     * Find first element in the provided element by selector
+     * @param element {@link Element}
+     * @param selector DOM selector
+     * @return optional of the element
+     */
     Optional<Element> getFirstBySelector(Element element, String selector);
+
+    /**
+     * Extract text from first occurrence
+     * @param element {@link Element}
+     * @param selector DOM selector
+     * @return find and return text from the element by selector
+     */
     String extractText(Element element, String selector);
+
+    /**
+     * Extract image from first occurrence
+     * @param element {@link Element}
+     * @param selector DOM selector
+     * @return find and return image from the element by selector
+     */
     String extractImage(Element element, String selector);
+
+    /**
+     * Extract link from first occurrence
+     * @param element {@link Element}
+     * @param selector DOM selector
+     * @return find and return link from the element by selector
+     */
     String extractLink(Element element, String selector);
 }
