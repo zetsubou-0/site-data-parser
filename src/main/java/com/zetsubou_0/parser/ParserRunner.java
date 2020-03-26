@@ -2,7 +2,7 @@ package com.zetsubou_0.parser;
 
 import com.google.common.collect.ImmutableMap;
 import com.zetsubou_0.parser.csv.CsvWriter;
-import com.zetsubou_0.parser.model.ItemData;
+import com.zetsubou_0.parser.model.DataItem;
 import com.zetsubou_0.parser.model.Type;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -35,7 +35,7 @@ public class ParserRunner implements Runnable {
     public void run() {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        final List<ItemData> dataList = SITES.entrySet()
+        final List<DataItem> dataList = SITES.entrySet()
                 .stream()
                 .flatMap(this::processEntry)
                 .distinct()
@@ -52,7 +52,7 @@ public class ParserRunner implements Runnable {
         }
     }
 
-    private Stream<ItemData> processEntry(Map.Entry<String, Type> entry) {
+    private Stream<DataItem> processEntry(Map.Entry<String, Type> entry) {
         try {
             System.out.println("Processing of " + entry.getKey() + " has been started");
             return parser.extract(entry.getKey(), entry.getValue())

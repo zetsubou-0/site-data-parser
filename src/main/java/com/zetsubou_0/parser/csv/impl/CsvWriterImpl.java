@@ -2,7 +2,7 @@ package com.zetsubou_0.parser.csv.impl;
 
 import com.zetsubou_0.parser.csv.CsvField;
 import com.zetsubou_0.parser.csv.CsvWriter;
-import com.zetsubou_0.parser.model.ItemData;
+import com.zetsubou_0.parser.model.DataItem;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -19,7 +19,7 @@ public class CsvWriterImpl implements CsvWriter {
     private static final String SEPARATOR = ";";
 
     @Override
-    public void write(String path, List<ItemData> data) throws IOException {
+    public void write(String path, List<DataItem> data) throws IOException {
         final Map<String, List<String>> titleValues = data.stream()
                 .flatMap(this::prepareData)
                 .collect(Collectors.toMap(
@@ -59,19 +59,19 @@ public class CsvWriterImpl implements CsvWriter {
         return StringUtils.replaceChars(text, SEPARATOR, ",");
     }
 
-    private Stream<Pair<String, List<String>>> prepareData(ItemData itemData) {
-        return getAllCsvFields(itemData.getClass())
-                .map(getFiledTitleAndValue(itemData))
+    private Stream<Pair<String, List<String>>> prepareData(DataItem dataItem) {
+        return getAllCsvFields(dataItem.getClass())
+                .map(getFiledTitleAndValue(dataItem))
                 .filter(Objects::nonNull);
     }
 
-    private Function<Field ,Pair<String, List<String>>> getFiledTitleAndValue(ItemData itemData) {
+    private Function<Field ,Pair<String, List<String>>> getFiledTitleAndValue(DataItem dataItem) {
         return field -> {
             final CsvField annotation = field.getAnnotation(CsvField.class);
             if (annotation == null) {
                 return null;
             }
-            String value = getFieldValue(field, itemData);
+            String value = getFieldValue(field, dataItem);
             if (value == null) {
                 value = StringUtils.EMPTY;
             }
@@ -81,13 +81,13 @@ public class CsvWriterImpl implements CsvWriter {
         };
     }
 
-    private String getFieldValue(Field field, ItemData itemData) {
+    private String getFieldValue(Field field, DataItem dataItem) {
         final boolean access = field.isAccessible();
         if (!access) {
             field.setAccessible(true);
         }
         try {
-            final Object val = field.get(itemData);
+            final Object val = field.get(dataItem);
             if (val instanceof String) {
                 return (String) val;
             }

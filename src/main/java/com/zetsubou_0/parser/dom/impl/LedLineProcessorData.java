@@ -1,30 +1,33 @@
 package com.zetsubou_0.parser.dom.impl;
 
+import com.zetsubou_0.parser.dom.DataItemProcessor;
 import com.zetsubou_0.parser.dom.Helper;
-import com.zetsubou_0.parser.dom.ItemProcessor;
-import com.zetsubou_0.parser.model.ItemData;
+import com.zetsubou_0.parser.model.DataItem;
 import com.zetsubou_0.parser.model.LedLine;
 import com.zetsubou_0.parser.model.Type;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
 
-public class LinesLedProcessor implements ItemProcessor {
+import javax.inject.Inject;
 
-    private static final Helper HELPER = new HelperImpl();
+public class LedLineProcessorData implements DataItemProcessor {
+
+    @Inject
+    private Helper helper;
 
     @Override
-    public ItemData processDomElement(Element element) {
+    public DataItem processDomElement(Element element) {
         final LedLine itemData = new LedLine(
                 Type.LED_LINE.getType(),
                 extractTitle(element),
                 extractArticle(element),
-                HELPER.extractImage(element, ".slide picture img"),
+                helper.extractImage(element, ".slide picture img"),
                 extractPrice(element)
         );
         return setupSpecificationsData(element, itemData);
     }
 
-    private ItemData setupSpecificationsData(Element element, LedLine itemData) {
+    private DataItem setupSpecificationsData(Element element, LedLine itemData) {
         itemData.setProductType(getSpecificationData(element, "T_62"));
         itemData.setLightColor(getSpecificationData(element, "COLOR_HREF"));
         itemData.setLightTemperature(getSpecificationData(element, "T_25"));
@@ -52,15 +55,15 @@ public class LinesLedProcessor implements ItemProcessor {
     }
 
     private String getSpecificationData(Element element, String property) {
-        return HELPER.extractText(element, ".specifications__table .specifications__table-item[data-property=\"" + property + "\"] .specifications__table-td");
+        return helper.extractText(element, ".specifications__table .specifications__table-item[data-property=\"" + property + "\"] .specifications__table-td");
     }
 
     private String extractTitle(Element element) {
-        return HELPER.extractText(element, ".product__title");
+        return helper.extractText(element, ".product__title");
     }
 
     private String extractArticle(Element element) {
-        return HELPER.extractText(element, ".product__vendor")
+        return helper.extractText(element, ".product__vendor")
                 .replaceAll("[\\D\\s]", StringUtils.EMPTY);
     }
 

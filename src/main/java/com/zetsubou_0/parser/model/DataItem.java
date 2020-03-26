@@ -1,6 +1,6 @@
 package com.zetsubou_0.parser.model;
 
-public interface ItemData {
+public interface DataItem {
 
     String getType();
 

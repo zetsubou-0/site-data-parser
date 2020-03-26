@@ -4,7 +4,7 @@ import com.zetsubou_0.parser.csv.CsvField;
 
 import java.util.Objects;
 
-public class AbstractItemData implements ItemData {
+public class AbstractDataItem implements DataItem {
 
     @CsvField("Тип")
     private final String type;
@@ -17,7 +17,7 @@ public class AbstractItemData implements ItemData {
     @CsvField("Цена")
     private final String price;
 
-    public AbstractItemData(String type, String title, String article, String image, String price) {
+    public AbstractDataItem(String type, String title, String article, String image, String price) {
         this.type = type;
         this.title = title;
         this.article = article;
@@ -54,7 +54,7 @@ public class AbstractItemData implements ItemData {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AbstractItemData that = (AbstractItemData) o;
+        AbstractDataItem that = (AbstractDataItem) o;
         return Objects.equals(title, that.title) &&
                 Objects.equals(article, that.article) &&
                 Objects.equals(image, that.image) &&

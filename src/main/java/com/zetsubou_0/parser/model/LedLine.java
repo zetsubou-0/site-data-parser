@@ -2,7 +2,7 @@ package com.zetsubou_0.parser.model;
 
 import com.zetsubou_0.parser.csv.CsvField;
 
-public class LedLine extends AbstractItemData {
+public class LedLine extends AbstractDataItem {
 
     @CsvField("Тип товара")
     private String productType;

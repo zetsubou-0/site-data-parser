@@ -2,14 +2,17 @@ package com.zetsubou_0.parser.dom.impl;
 
 import com.zetsubou_0.parser.dom.DomAdapter;
 import com.zetsubou_0.parser.dom.Helper;
-import com.zetsubou_0.parser.model.ItemData;
+import com.zetsubou_0.parser.dom.ProcessorFactory;
+import com.zetsubou_0.parser.model.DataItem;
 import com.zetsubou_0.parser.model.Type;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -22,20 +25,25 @@ public class DomAdapterImpl implements DomAdapter {
 
     private static final String PAGENATION_PARAMETER = "?PAGEN_1=";
 
+    @Inject
+    private ProcessorFactory processorFactory;
+    @Inject
+    private Helper helper;
+
     @Override
-    public List<ItemData> adapt(Document document, Type type) {
+    public List<DataItem> adapt(Document document, Type type) {
         return pageUrlStream(document)
                 .flatMap(this::toDocumentElement)
                 .filter(Objects::nonNull)
                 .flatMap(this::openUrl)
                 .filter(Objects::nonNull)
-                .map(ProcessorFactory.create(type)::processDomElement)
+                .map(processorFactory.create(type)::processDomElement)
                 .distinct()
                 .collect(Collectors.toList());
     }
 
     private Stream<Element> openUrl(Element element) {
-        final String url = element.select(".card__img a").get(0).absUrl(Helper.HREF);
+        final String url = helper.extractLink(element, ".card__img a");
         if (StringUtils.isEmpty(url)) {
             return Stream.empty();
         }
@@ -47,6 +55,7 @@ public class DomAdapterImpl implements DomAdapter {
                 .stream()
                 .parallel()
                 .map(el -> el.absUrl(Helper.HREF))
+                .filter(Objects::nonNull)
                 .map(this::loadPage);
         return Stream.concat(Stream.of(pageElement), elementStream)
                 .parallel()
@@ -55,10 +64,13 @@ public class DomAdapterImpl implements DomAdapter {
 
     private Element loadPage(String url) {
         try {
-            return Jsoup.connect(url)
+            final Elements elements = Jsoup.connect(url)
                     .get()
-                    .select(".container")
-                    .get(0);
+                    .select(".container");
+            if (elements == null || elements.isEmpty()) {
+                return null;
+            }
+            return elements.get(0);
         } catch (IOException e) {
             e.printStackTrace(System.err);
             return null;
