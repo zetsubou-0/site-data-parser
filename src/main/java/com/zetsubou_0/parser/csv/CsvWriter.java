@@ -3,7 +3,7 @@ package com.zetsubou_0.parser.csv;
 import com.zetsubou_0.parser.model.DataItem;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
 public interface CsvWriter {
 
@@ -13,5 +13,5 @@ public interface CsvWriter {
      * @param data list of data items
      * @throws IOException
      */
-    void write(String path, List<DataItem> data) throws IOException;
+    void write(String path, Set<DataItem> data) throws IOException;
 }

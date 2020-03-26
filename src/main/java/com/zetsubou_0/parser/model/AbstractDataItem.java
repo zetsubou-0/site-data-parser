@@ -4,17 +4,17 @@ import com.zetsubou_0.parser.csv.CsvField;
 
 import java.util.Objects;
 
-public class AbstractDataItem implements DataItem {
+public abstract class AbstractDataItem implements DataItem {
 
-    @CsvField("Тип")
+    @CsvField
     private final String type;
-    @CsvField("Артикул")
+    @CsvField
     private final String article;
-    @CsvField("Заголовок")
+    @CsvField
     private final String title;
-    @CsvField("Изображение")
+    @CsvField
     private final String image;
-    @CsvField("Цена")
+    @CsvField
     private final String price;
 
     public AbstractDataItem(String type, String title, String article, String image, String price) {

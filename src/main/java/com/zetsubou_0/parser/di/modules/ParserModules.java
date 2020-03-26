@@ -9,7 +9,7 @@ import com.zetsubou_0.parser.csv.impl.CsvWriterImpl;
 import com.zetsubou_0.parser.dom.*;
 import com.zetsubou_0.parser.dom.impl.*;
 import com.zetsubou_0.parser.impl.SiteParserImpl;
-import com.zetsubou_0.parser.model.Type;
+import com.zetsubou_0.parser.model.type.PageType;
 
 import javax.inject.Singleton;
 
@@ -37,7 +37,9 @@ public class ParserModules extends AbstractModule {
 
         this.bind(ProcessorFactory.class).to(ProcessorFactoryImpl.class).in(Singleton.class);
 
-        final MapBinder<Type, DataItemProcessor> processors = MapBinder.newMapBinder(this.binder(), Type.class, DataItemProcessor.class);
-        processors.addBinding(Type.LED_LINE).to(LedLineProcessorData.class);
+        final MapBinder<PageType, DataItemProcessor> processors = MapBinder.newMapBinder(this.binder(), PageType.class, DataItemProcessor.class);
+        processors.addBinding(PageType.UNKNOWN).to(MockDataItemProcessor.class);
+        processors.addBinding(PageType.LED_LINE).to(LedLineDataProcessor.class);
+        processors.addBinding(PageType.POWER_BLOCK).to(PowerBlockDataProcessor.class);
     }
 }

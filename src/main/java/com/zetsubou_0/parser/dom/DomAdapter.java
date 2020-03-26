@@ -1,18 +1,18 @@
 package com.zetsubou_0.parser.dom;
 
 import com.zetsubou_0.parser.model.DataItem;
-import com.zetsubou_0.parser.model.Type;
+import com.zetsubou_0.parser.model.type.PageType;
 import org.jsoup.nodes.Document;
 
-import java.util.List;
+import java.util.Set;
 
 public interface DomAdapter {
 
     /**
      * Adapt DOM document representation to list of data items according provided type
      * @param document {@link Document}
-     * @param type type of page
+     * @param pageType type of page
      * @return list of data items
      */
-    List<DataItem> adapt(Document document, Type type);
+    Set<DataItem> adapt(Document document, PageType pageType);
 }

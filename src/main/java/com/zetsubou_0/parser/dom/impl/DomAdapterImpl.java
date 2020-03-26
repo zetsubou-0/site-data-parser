@@ -4,7 +4,7 @@ import com.zetsubou_0.parser.dom.DomAdapter;
 import com.zetsubou_0.parser.dom.Helper;
 import com.zetsubou_0.parser.dom.ProcessorFactory;
 import com.zetsubou_0.parser.model.DataItem;
-import com.zetsubou_0.parser.model.Type;
+import com.zetsubou_0.parser.model.type.PageType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jsoup.Jsoup;
@@ -14,9 +14,9 @@ import org.jsoup.select.Elements;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -31,15 +31,15 @@ public class DomAdapterImpl implements DomAdapter {
     private Helper helper;
 
     @Override
-    public List<DataItem> adapt(Document document, Type type) {
+    public Set<DataItem> adapt(Document document, PageType pageType) {
         return pageUrlStream(document)
                 .flatMap(this::toDocumentElement)
                 .filter(Objects::nonNull)
                 .flatMap(this::openUrl)
                 .filter(Objects::nonNull)
-                .map(processorFactory.create(type)::processDomElement)
-                .distinct()
-                .collect(Collectors.toList());
+                .map(processorFactory.create(pageType)::processDomElement)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     private Stream<Element> openUrl(Element element) {

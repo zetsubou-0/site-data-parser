@@ -5,6 +5,8 @@ import org.jsoup.nodes.Element;
 
 public interface DataItemProcessor {
 
+    String CONTENT = "content";
+
     /**
      * Convert DOM element into {@link DataItem}
      * @param element {@link Element}

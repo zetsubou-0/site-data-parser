@@ -1,6 +1,7 @@
 package com.zetsubou_0.parser.dom.impl;
 
 import com.zetsubou_0.parser.dom.Helper;
+import com.zetsubou_0.parser.model.type.CharacteristicsType;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -14,6 +15,14 @@ public class HelperImpl implements Helper {
         return Optional.of(element.select(selector))
                 .filter(elements -> !elements.isEmpty())
                 .map(Elements::first);
+    }
+
+    @Override
+    public String getSpecificationData(Element element, CharacteristicsType type) {
+        return extractText(
+                element,
+                ".specifications__table .specifications__table-item[data-property=\"" + type.getSelector() + "\"] .specifications__table-td"
+        );
     }
 
     @Override

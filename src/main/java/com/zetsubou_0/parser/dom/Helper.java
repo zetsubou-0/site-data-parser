@@ -1,5 +1,6 @@
 package com.zetsubou_0.parser.dom;
 
+import com.zetsubou_0.parser.model.type.CharacteristicsType;
 import org.jsoup.nodes.Element;
 
 import java.util.Optional;
@@ -16,6 +17,14 @@ public interface Helper {
      * @return optional of the element
      */
     Optional<Element> getFirstBySelector(Element element, String selector);
+
+    /**
+     * Extract data from data-attr of element on the specification tab
+     * @param element {@link Element}
+     * @param type {@link CharacteristicsType}
+     * @return data from data-attr of element on the specification tab
+     */
+    String getSpecificationData(Element element, CharacteristicsType type);
 
     /**
      * Extract text from first occurrence

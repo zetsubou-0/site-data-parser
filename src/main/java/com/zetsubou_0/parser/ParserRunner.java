@@ -1,25 +1,26 @@
 package com.zetsubou_0.parser;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 import com.zetsubou_0.parser.csv.CsvWriter;
+import com.zetsubou_0.parser.model.Configuration;
 import com.zetsubou_0.parser.model.DataItem;
-import com.zetsubou_0.parser.model.Type;
+import com.zetsubou_0.parser.model.type.PageType;
 import org.apache.commons.lang3.time.StopWatch;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Set;
 
 public class ParserRunner implements Runnable {
 
-    private static final Map<String, Type> SITES = ImmutableMap.<String, Type>builder()
-            .put("https://arlight.by/catalog/svetodiodnye-lenty-100002", Type.LED_LINE)
+    private static final List<Configuration> CONFIGURATIONS = ImmutableList.<Configuration>builder()
+//            .add(Configuration.of("https://arlight.by/catalog/svetodiodnye-lenty-100002", PageType.LED_LINE, "led.csv"))
+            .add(Configuration.of("https://arlight.by/catalog/bloki-pitaniya-100006/", PageType.POWER_BLOCK, "power.csv"))
             .build();
 
-    private final String fileName;
+    private final String filePath;
 
     @Inject
     private Parser parser;
@@ -28,38 +29,35 @@ public class ParserRunner implements Runnable {
 
     @Inject
     public ParserRunner(String file) {
-        this.fileName = file;
+        this.filePath = file;
     }
 
     @Override
     public void run() {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        final List<DataItem> dataList = SITES.entrySet()
-                .stream()
-                .flatMap(this::processEntry)
-                .distinct()
-                .collect(Collectors.toList());
+        for (Configuration configuration : CONFIGURATIONS) {
+            final Set<DataItem> dataItems = processEntry(configuration);
+            try {
+                csvWriter.write(filePath + "/" + configuration.getName(), dataItems);
+            } catch (IOException e) {
+                e.printStackTrace(System.err);
+            }
+            System.out.println("Total size: " + dataItems.size());
+        }
         stopWatch.stop();
 
-        System.out.println("Total size: " + dataList.size());
         System.out.println("Total time: " + stopWatch);
 
-        try {
-            csvWriter.write(fileName, dataList);
-        } catch (IOException e) {
-            e.printStackTrace(System.err);
-        }
     }
 
-    private Stream<DataItem> processEntry(Map.Entry<String, Type> entry) {
+    private Set<DataItem> processEntry(Configuration configuration) {
         try {
-            System.out.println("Processing of " + entry.getKey() + " has been started");
-            return parser.extract(entry.getKey(), entry.getValue())
-                    .stream();
+            System.out.println("Processing of " + configuration.getUrl() + " has been started");
+            return parser.extract(configuration.getUrl(), configuration.getPageType());
         } catch (IOException e) {
             e.printStackTrace(System.err);
         }
-        return Stream.empty();
+        return Collections.emptySet();
     }
 }

@@ -3,6 +3,7 @@ package com.zetsubou_0.parser.csv.impl;
 import com.zetsubou_0.parser.csv.CsvField;
 import com.zetsubou_0.parser.csv.CsvWriter;
 import com.zetsubou_0.parser.model.DataItem;
+import com.zetsubou_0.parser.model.type.CharacteristicsType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -10,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -17,22 +19,26 @@ import java.util.stream.Stream;
 public class CsvWriterImpl implements CsvWriter {
 
     private static final String SEPARATOR = ";";
+    private static final BinaryOperator<List<String>> MERGER = (oldVal, newVal) -> {
+        oldVal.addAll(newVal);
+        return oldVal;
+    };
 
     @Override
-    public void write(String path, List<DataItem> data) throws IOException {
+    public void write(String path, Set<DataItem> data) throws IOException {
         final Map<String, List<String>> titleValues = data.stream()
                 .flatMap(this::prepareData)
                 .collect(Collectors.toMap(
                         Pair::getKey,
                         Pair::getValue,
-                        (oldVal, newVal) -> {
-                            oldVal.addAll(newVal);
-                            return oldVal;
-                        },
+                        MERGER,
                         LinkedHashMap::new
                 ));
         final List<String> titles = new ArrayList<>(titleValues.keySet());
         final String titlesLine = String.join(SEPARATOR, titles);
+        if (titles.isEmpty()) {
+            return;
+        }
         final String firstTitle = titles.get(0);
         if (firstTitle == null) {
             return;
@@ -82,7 +88,10 @@ public class CsvWriterImpl implements CsvWriter {
             }
             final List<String> list = new ArrayList<>();
             list.add(value);
-            return Pair.of(annotation.value(), list);
+            if (annotation.value() == CharacteristicsType.EMPTY) {
+                return Pair.of(CharacteristicsType.of(field.getName()).getHeader(), list);
+            }
+            return Pair.of(annotation.value().getHeader(), list);
         };
     }
 

@@ -1,5 +1,7 @@
 package com.zetsubou_0.parser.csv;
 
+import com.zetsubou_0.parser.model.type.CharacteristicsType;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -15,5 +17,5 @@ public @interface CsvField {
      * Field header
      * @return field header
      */
-    String value();
+    CharacteristicsType value() default CharacteristicsType.EMPTY;
 }
