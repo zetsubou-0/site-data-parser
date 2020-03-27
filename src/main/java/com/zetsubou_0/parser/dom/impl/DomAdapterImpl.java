@@ -53,12 +53,10 @@ public class DomAdapterImpl implements DomAdapter {
         }
         Stream<Element> elementStream = pageElement.select(".product__other-list a")
                 .stream()
-                .parallel()
                 .map(el -> el.absUrl(Helper.HREF))
                 .filter(Objects::nonNull)
                 .map(this::loadPage);
         return Stream.concat(Stream.of(pageElement), elementStream)
-                .parallel()
                 .distinct();
     }
 
@@ -82,8 +80,7 @@ public class DomAdapterImpl implements DomAdapter {
             return Jsoup.connect(url)
                     .get()
                     .select(".catalog-block__item.card")
-                    .stream()
-                    .parallel();
+                    .stream();
         } catch (IOException e) {
             e.printStackTrace(System.err);
             return Stream.empty();
