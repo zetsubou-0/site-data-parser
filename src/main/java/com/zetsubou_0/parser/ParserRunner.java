@@ -16,7 +16,7 @@ import java.util.Set;
 public class ParserRunner implements Runnable {
 
     private static final List<Configuration> CONFIGURATIONS = ImmutableList.<Configuration>builder()
-//            .add(Configuration.of("https://arlight.by/catalog/svetodiodnye-lenty-100002", PageType.LED_LINE, "led.csv"))
+            .add(Configuration.of("https://arlight.by/catalog/svetodiodnye-lenty-100002", PageType.LED_LINE, "led.csv"))
             .add(Configuration.of("https://arlight.by/catalog/bloki-pitaniya-100006/", PageType.POWER_BLOCK, "power.csv"))
             .build();
 

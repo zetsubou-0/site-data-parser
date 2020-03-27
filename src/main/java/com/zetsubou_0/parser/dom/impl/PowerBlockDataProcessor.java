@@ -9,20 +9,7 @@ import javax.inject.Inject;
 public class PowerBlockDataProcessor extends AbstractDataItemProcessor<PowerBlock> {
 
     @Inject
-    private Helper helper;
-
-    @Override
-    protected PageType getType() {
-        return PageType.POWER_BLOCK;
-    }
-
-    @Override
-    protected Class<PowerBlock> getItemClass() {
-        return PowerBlock.class;
-    }
-
-    @Override
-    protected Helper getHelper() {
-        return helper;
+    public PowerBlockDataProcessor(Helper helper) {
+        super(helper, PageType.POWER_BLOCK, PowerBlock.class);
     }
 }

@@ -9,20 +9,7 @@ import javax.inject.Inject;
 public class LedLineDataProcessor extends AbstractDataItemProcessor<LedLine> {
 
     @Inject
-    private Helper helper;
-
-    @Override
-    protected PageType getType() {
-        return PageType.LED_LINE;
-    }
-
-    @Override
-    protected Class<LedLine> getItemClass() {
-        return LedLine.class;
-    }
-
-    @Override
-    protected Helper getHelper() {
-        return helper;
+    public LedLineDataProcessor(Helper helper) {
+        super(helper, PageType.LED_LINE, LedLine.class);
     }
 }
