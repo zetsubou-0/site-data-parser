@@ -1,7 +1,9 @@
 package com.zetsubou_0.parser.dom.impl;
 
+import com.zetsubou_0.parser.dom.DataItemModel;
 import com.zetsubou_0.parser.dom.DataItemProcessor;
 import com.zetsubou_0.parser.dom.Helper;
+import com.zetsubou_0.parser.model.AbstractDataItem;
 import com.zetsubou_0.parser.model.DataItem;
 import com.zetsubou_0.parser.model.type.CharacteristicsType;
 import com.zetsubou_0.parser.model.type.PageType;
@@ -28,6 +30,9 @@ public abstract class AbstractDataItemProcessor<T extends DataItem> implements D
 
     @Override
     public DataItem processDomElement(Element element) {
+        if (!itemClass.isAnnotationPresent(DataItemModel.class)) {
+            return null;
+        }
         try {
             final T item = itemClass.getConstructor(String.class, String.class, String.class, String.class, String.class)
                     .newInstance(
@@ -53,7 +58,7 @@ public abstract class AbstractDataItemProcessor<T extends DataItem> implements D
     private Stream<Field> getFields(Class<?> cl) {
         final Field[] fields = cl.getDeclaredFields();
         final Class<?> parentClass = cl.getSuperclass();
-        return parentClass == null
+        return parentClass.isAssignableFrom(AbstractDataItem.class)
                 ? Arrays.stream(fields)
                 : Stream.concat(
                         Arrays.stream(fields),

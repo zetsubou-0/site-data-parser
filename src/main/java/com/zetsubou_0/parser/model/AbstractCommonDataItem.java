@@ -2,6 +2,8 @@ package com.zetsubou_0.parser.model;
 
 import com.zetsubou_0.parser.csv.CsvField;
 
+import java.util.Objects;
+
 public abstract class AbstractCommonDataItem extends AbstractDataItem {
 
     @CsvField
@@ -27,84 +29,25 @@ public abstract class AbstractCommonDataItem extends AbstractDataItem {
         super(type, title, article, image, price);
     }
 
-    public String getProductType() {
-        return productType;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        AbstractCommonDataItem that = (AbstractCommonDataItem) o;
+        return Objects.equals(productType, that.productType) &&
+                Objects.equals(ip, that.ip) &&
+                Objects.equals(length, that.length) &&
+                Objects.equals(width, that.width) &&
+                Objects.equals(height, that.height) &&
+                Objects.equals(packing, that.packing) &&
+                Objects.equals(packingType, that.packingType) &&
+                Objects.equals(weight, that.weight) &&
+                Objects.equals(guaranteePeriod, that.guaranteePeriod);
     }
 
-    public AbstractCommonDataItem setProductType(String productType) {
-        this.productType = productType;
-        return this;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public AbstractCommonDataItem setIp(String ip) {
-        this.ip = ip;
-        return this;
-    }
-
-    public String getLength() {
-        return length;
-    }
-
-    public AbstractCommonDataItem setLength(String length) {
-        this.length = length;
-        return this;
-    }
-
-    public String getWidth() {
-        return width;
-    }
-
-    public AbstractCommonDataItem setWidth(String width) {
-        this.width = width;
-        return this;
-    }
-
-    public String getHeight() {
-        return height;
-    }
-
-    public AbstractCommonDataItem setHeight(String height) {
-        this.height = height;
-        return this;
-    }
-
-    public String getPacking() {
-        return packing;
-    }
-
-    public AbstractCommonDataItem setPacking(String packing) {
-        this.packing = packing;
-        return this;
-    }
-
-    public String getPackingType() {
-        return packingType;
-    }
-
-    public AbstractCommonDataItem setPackingType(String packingType) {
-        this.packingType = packingType;
-        return this;
-    }
-
-    public String getWeight() {
-        return weight;
-    }
-
-    public AbstractCommonDataItem setWeight(String weight) {
-        this.weight = weight;
-        return this;
-    }
-
-    public String getGuaranteePeriod() {
-        return guaranteePeriod;
-    }
-
-    public AbstractCommonDataItem setGuaranteePeriod(String guaranteePeriod) {
-        this.guaranteePeriod = guaranteePeriod;
-        return this;
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), productType, ip, length, width, height, packing, packingType, weight, guaranteePeriod);
     }
 }
