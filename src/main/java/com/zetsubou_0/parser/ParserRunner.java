@@ -16,11 +16,15 @@ import java.util.Set;
 public class ParserRunner implements Runnable {
 
     private static final List<Configuration> CONFIGURATIONS = ImmutableList.<Configuration>builder()
-            .add(Configuration.of("https://arlight.by/catalog/svetodiodnye-lenty-100002", PageType.LED_LINE, "led.csv"))
-            .add(Configuration.of("https://arlight.by/catalog/bloki-pitaniya-100006/", PageType.POWER_BLOCK, "power.csv"))
+            .add(Configuration.of("https://arlight.by/catalog/svetodiodnye-lenty-100002", PageType.LED_LINE, "led-lines.csv"))
+            .add(Configuration.of("https://arlight.by/catalog/bloki-pitaniya-100006", PageType.POWER_BLOCK, "power-blocks.csv"))
+            .add(Configuration.of("https://arlight.by/catalog/alyuminievye-profili-100011", PageType.ALUMINIUM_CONSTRUCTION, "aluminium-construction.csv"))
+            .add(Configuration.of("https://arlight.by/catalog/svetodiodnye-svetilniki-100010", PageType.LED_LIGHTS, "led-lights.csv"))
+            .add(Configuration.of("https://arlight.by/catalog/svetodiodnyy-dekor-100019", PageType.LED_DECOR, "led-decor.csv"))
             .build();
 
-    private final String filePath;
+    private final String path;
+    private final Integer delay;
 
     @Inject
     private Parser parser;
@@ -28,8 +32,9 @@ public class ParserRunner implements Runnable {
     private CsvWriter csvWriter;
 
     @Inject
-    public ParserRunner(String file) {
-        this.filePath = file;
+    public ParserRunner(String path, Integer delay) {
+        this.path = path;
+        this.delay = delay;
     }
 
     @Override
@@ -39,7 +44,7 @@ public class ParserRunner implements Runnable {
         for (Configuration configuration : CONFIGURATIONS) {
             final Set<DataItem> dataItems = processEntry(configuration);
             try {
-                csvWriter.write(filePath + "/" + configuration.getName(), dataItems);
+                csvWriter.write(path + "/" + configuration.getName(), dataItems);
             } catch (IOException e) {
                 e.printStackTrace(System.err);
             }
@@ -54,7 +59,7 @@ public class ParserRunner implements Runnable {
     private Set<DataItem> processEntry(Configuration configuration) {
         try {
             System.out.println("Processing of " + configuration.getUrl() + " has been started");
-            return parser.extract(configuration.getUrl(), configuration.getPageType());
+            return parser.extract(configuration.getUrl(), configuration.getPageType(), delay);
         } catch (IOException e) {
             e.printStackTrace(System.err);
         }

@@ -12,8 +12,9 @@ public interface Parser {
      * Parse data by URL and extract data items as list by type
      * @param url URL of the page
      * @param pageType {@link PageType}
+     * @param delay delay between requests
      * @return data items as list by type
      * @throws IOException
      */
-    Set<DataItem> extract(String url, PageType pageType) throws IOException;
+    Set<DataItem> extract(String url, PageType pageType, int delay) throws IOException;
 }

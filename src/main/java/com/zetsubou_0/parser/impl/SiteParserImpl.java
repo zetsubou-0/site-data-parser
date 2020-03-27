@@ -17,8 +17,8 @@ public class SiteParserImpl implements Parser {
     private DomAdapter domAdapter;
 
     @Override
-    public Set<DataItem> extract(String url, PageType pageType) throws IOException {
+    public Set<DataItem> extract(String url, PageType pageType, int delay) throws IOException {
         final Document doc = Jsoup.connect(url).get();
-        return domAdapter.adapt(doc, pageType);
+        return domAdapter.adapt(doc, pageType, delay);
     }
 }

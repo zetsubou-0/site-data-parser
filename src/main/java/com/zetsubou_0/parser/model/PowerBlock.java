@@ -1,7 +1,6 @@
 package com.zetsubou_0.parser.model;
 
 import com.zetsubou_0.parser.csv.CsvField;
-import com.zetsubou_0.parser.dom.DataItemModel;
 
 import java.util.Objects;
 

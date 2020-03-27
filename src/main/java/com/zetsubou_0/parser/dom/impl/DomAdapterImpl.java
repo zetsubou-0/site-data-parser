@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -31,60 +33,69 @@ public class DomAdapterImpl implements DomAdapter {
     private Helper helper;
 
     @Override
-    public Set<DataItem> adapt(Document document, PageType pageType) {
+    public Set<DataItem> adapt(Document document, PageType pageType, int delay) {
         return pageUrlStream(document)
-                .flatMap(this::toDocumentElement)
+                .flatMap(toDocumentElement(delay))
                 .filter(Objects::nonNull)
-                .flatMap(this::openUrl)
+                .flatMap(openUrl(delay))
                 .filter(Objects::nonNull)
                 .map(processorFactory.create(pageType)::processDomElement)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 
-    private Stream<Element> openUrl(Element element) {
-        final String url = helper.extractLink(element, ".card__img a");
-        if (StringUtils.isEmpty(url)) {
-            return Stream.empty();
-        }
-        final Element pageElement = loadPage(url);
-        if (pageElement == null) {
-            return Stream.empty();
-        }
-        Stream<Element> elementStream = pageElement.select(".product__other-list a")
-                .stream()
-                .map(el -> el.absUrl(Helper.HREF))
-                .filter(Objects::nonNull)
-                .map(this::loadPage);
-        return Stream.concat(Stream.of(pageElement), elementStream)
-                .distinct();
+    private Function<Element, Stream<Element>> openUrl(int delay) {
+        return element -> {
+            final String url = helper.extractLink(element, ".card__img a");
+            if (StringUtils.isEmpty(url)) {
+                return Stream.empty();
+            }
+            final Element pageElement = loadPage(delay).apply(url);
+            if (pageElement == null) {
+                return Stream.empty();
+            }
+            Stream<Element> elementStream = pageElement.select(".product__other-list a")
+                    .stream()
+                    .map(el -> el.absUrl(Helper.HREF))
+                    .filter(Objects::nonNull)
+                    .map(loadPage(delay));
+            return Stream.concat(Stream.of(pageElement), elementStream)
+                    .distinct();
+        };
     }
 
-    private Element loadPage(String url) {
-        try {
-            final Elements elements = Jsoup.connect(url)
-                    .get()
-                    .select(".container");
-            if (elements == null || elements.isEmpty()) {
+    private Function<String, Element> loadPage(int delay) {
+        return url -> {
+            try {
+                final Elements elements = Jsoup.connect(url)
+                        .get()
+                        .select(".container");
+                TimeUnit.MILLISECONDS.sleep(delay);
+                if (elements == null || elements.isEmpty()) {
+                    return null;
+                }
+                return elements.get(0);
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace(System.err);
                 return null;
             }
-            return elements.get(0);
-        } catch (IOException e) {
-            e.printStackTrace(System.err);
-            return null;
-        }
+        };
     }
 
-    private Stream<Element> toDocumentElement(String url) {
-        try {
-            return Jsoup.connect(url)
-                    .get()
-                    .select(".catalog-block__item.card")
-                    .stream();
-        } catch (IOException e) {
-            e.printStackTrace(System.err);
-            return Stream.empty();
-        }
+    private Function<String, Stream<Element>> toDocumentElement(int delay) {
+        return url -> {
+            try {
+                Stream<Element> elementStream = Jsoup.connect(url)
+                        .get()
+                        .select(".catalog-block__item.card")
+                        .stream();
+                TimeUnit.MILLISECONDS.sleep(delay);
+                return elementStream;
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace(System.err);
+                return Stream.empty();
+            }
+        };
     }
 
     private Stream<String> pageUrlStream(Document document) {

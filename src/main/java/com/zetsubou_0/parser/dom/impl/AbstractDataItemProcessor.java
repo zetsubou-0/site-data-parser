@@ -1,6 +1,6 @@
 package com.zetsubou_0.parser.dom.impl;
 
-import com.zetsubou_0.parser.dom.DataItemModel;
+import com.zetsubou_0.parser.model.DataItemModel;
 import com.zetsubou_0.parser.dom.DataItemProcessor;
 import com.zetsubou_0.parser.dom.Helper;
 import com.zetsubou_0.parser.model.AbstractDataItem;

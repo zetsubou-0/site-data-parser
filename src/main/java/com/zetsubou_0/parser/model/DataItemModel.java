@@ -1,4 +1,4 @@
-package com.zetsubou_0.parser.dom;
+package com.zetsubou_0.parser.model;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -15,15 +15,22 @@ import javax.inject.Singleton;
 
 public class ParserModules extends AbstractModule {
 
-    private final String fileName;
+    private final String path;
+    private final Integer delay;
 
-    public ParserModules(String fileName) {
-        this.fileName = fileName;
+    public ParserModules(String path, Integer delay) {
+        this.path = path;
+        this.delay = delay;
     }
 
     @Provides
-    public String getFileName() {
-        return fileName;
+    public String getPath() {
+        return path;
+    }
+
+    @Provides
+    public Integer getDelay() {
+        return delay;
     }
 
     @Override
@@ -41,5 +48,8 @@ public class ParserModules extends AbstractModule {
         processors.addBinding(PageType.UNKNOWN).to(MockDataItemProcessor.class);
         processors.addBinding(PageType.LED_LINE).to(LedLineDataProcessor.class);
         processors.addBinding(PageType.POWER_BLOCK).to(PowerBlockDataProcessor.class);
+        processors.addBinding(PageType.ALUMINIUM_CONSTRUCTION).to(AluminiumConstructionDataProcessor.class);
+        processors.addBinding(PageType.LED_LIGHTS).to(LedLightsDataProcessor.class);
+        processors.addBinding(PageType.LED_DECOR).to(LedDecorDataProcessor.class);
     }
 }

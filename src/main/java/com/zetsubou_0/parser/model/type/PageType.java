@@ -5,7 +5,11 @@ import org.apache.commons.lang3.StringUtils;
 public enum PageType {
     UNKNOWN(StringUtils.EMPTY),
     LED_LINE("Светодиодные ленты"),
-    POWER_BLOCK("Блок питания");
+    POWER_BLOCK("Блок питания"),
+    ALUMINIUM_CONSTRUCTION("Алюминиевые профили"),
+    LED_LIGHTS("Светодиодные светильники"),
+    LED_DECOR("Светодиодный декор"),
+    ;
 
     private final String type;
 
