@@ -8,6 +8,8 @@ import java.util.Objects;
 public class LedLine extends AbstractLedProduct {
 
     @CsvField
+    private String size;
+    @CsvField
     private String density;
     @CsvField
     private String count;
@@ -36,7 +38,8 @@ public class LedLine extends AbstractLedProduct {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         LedLine ledLine = (LedLine) o;
-        return Objects.equals(density, ledLine.density) &&
+        return Objects.equals(size, ledLine.size) &&
+                Objects.equals(density, ledLine.density) &&
                 Objects.equals(count, ledLine.count) &&
                 Objects.equals(luminousFlux, ledLine.luminousFlux) &&
                 Objects.equals(luminousFluxCommon, ledLine.luminousFluxCommon) &&
@@ -49,6 +52,6 @@ public class LedLine extends AbstractLedProduct {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), density, count, luminousFlux, luminousFluxCommon, power, powerCommonMax, powerCommon, current, minSize);
+        return Objects.hash(super.hashCode(), size, density, count, luminousFlux, luminousFluxCommon, power, powerCommonMax, powerCommon, current, minSize);
     }
 }

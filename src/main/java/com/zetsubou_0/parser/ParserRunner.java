@@ -24,7 +24,6 @@ public class ParserRunner implements Runnable {
             .build();
 
     private final String path;
-    private final Integer delay;
 
     @Inject
     private Parser parser;
@@ -32,9 +31,8 @@ public class ParserRunner implements Runnable {
     private CsvWriter csvWriter;
 
     @Inject
-    public ParserRunner(String path, Integer delay) {
+    public ParserRunner(String path) {
         this.path = path;
-        this.delay = delay;
     }
 
     @Override
@@ -59,7 +57,7 @@ public class ParserRunner implements Runnable {
     private Set<DataItem> processEntry(Configuration configuration) {
         try {
             System.out.println("Processing of " + configuration.getUrl() + " has been started");
-            return parser.extract(configuration.getUrl(), configuration.getPageType(), delay);
+            return parser.extract(configuration.getUrl(), configuration.getPageType());
         } catch (IOException e) {
             e.printStackTrace(System.err);
         }

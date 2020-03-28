@@ -12,8 +12,7 @@ public interface DomAdapter {
      * Adapt DOM document representation to list of data items according provided type
      * @param document {@link Document}
      * @param pageType type of page
-     * @param delay delay between requests
      * @return list of data items
      */
-    Set<DataItem> adapt(Document document, PageType pageType, int delay);
+    Set<DataItem> adapt(Document document, PageType pageType);
 }

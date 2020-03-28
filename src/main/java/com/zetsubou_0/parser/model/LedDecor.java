@@ -8,6 +8,8 @@ import java.util.Objects;
 public class LedDecor extends AbstractLedProduct {
 
     @CsvField
+    private String size;
+    @CsvField
     private String luminousFlux;
     @CsvField
     private String density;
@@ -26,7 +28,8 @@ public class LedDecor extends AbstractLedProduct {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         LedDecor ledDecor = (LedDecor) o;
-        return Objects.equals(luminousFlux, ledDecor.luminousFlux) &&
+        return Objects.equals(size, ledDecor.size) &&
+                Objects.equals(luminousFlux, ledDecor.luminousFlux) &&
                 Objects.equals(density, ledDecor.density) &&
                 Objects.equals(minSize, ledDecor.minSize) &&
                 Objects.equals(power, ledDecor.power);
@@ -34,6 +37,6 @@ public class LedDecor extends AbstractLedProduct {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), luminousFlux, density, minSize, power);
+        return Objects.hash(super.hashCode(), size, luminousFlux, density, minSize, power);
     }
 }

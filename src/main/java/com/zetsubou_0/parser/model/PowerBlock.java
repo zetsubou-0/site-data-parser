@@ -8,6 +8,8 @@ import java.util.Objects;
 public class PowerBlock extends AbstractCommonDataItem {
 
     @CsvField
+    private String ip;
+    @CsvField
     private String workingTemperature;
     @CsvField
     private String material;
@@ -44,7 +46,8 @@ public class PowerBlock extends AbstractCommonDataItem {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         PowerBlock that = (PowerBlock) o;
-        return Objects.equals(workingTemperature, that.workingTemperature) &&
+        return Objects.equals(ip, that.ip) &&
+                Objects.equals(workingTemperature, that.workingTemperature) &&
                 Objects.equals(material, that.material) &&
                 Objects.equals(efficiency, that.efficiency) &&
                 Objects.equals(connectionType, that.connectionType) &&
@@ -61,6 +64,6 @@ public class PowerBlock extends AbstractCommonDataItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), workingTemperature, material, efficiency, connectionType, caseType, caseForm, pwd, outputPower, outputVoltage, inputVoltage, outputCurrent, inputAlternatingCurrent, inrushCurrent);
+        return Objects.hash(super.hashCode(), ip, workingTemperature, material, efficiency, connectionType, caseType, caseForm, pwd, outputPower, outputVoltage, inputVoltage, outputCurrent, inputAlternatingCurrent, inrushCurrent);
     }
 }

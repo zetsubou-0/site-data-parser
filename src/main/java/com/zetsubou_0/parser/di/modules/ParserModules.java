@@ -16,21 +16,14 @@ import javax.inject.Singleton;
 public class ParserModules extends AbstractModule {
 
     private final String path;
-    private final Integer delay;
 
-    public ParserModules(String path, Integer delay) {
+    public ParserModules(String path) {
         this.path = path;
-        this.delay = delay;
     }
 
     @Provides
     public String getPath() {
         return path;
-    }
-
-    @Provides
-    public Integer getDelay() {
-        return delay;
     }
 
     @Override

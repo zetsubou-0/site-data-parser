@@ -11,11 +11,11 @@ public abstract class AbstractLedProduct extends AbstractCommonDataItem {
     @CsvField
     private String lightTemperature;
     @CsvField
+    private String ip;
+    @CsvField
     private String index;
     @CsvField
     private String angle;
-    @CsvField
-    private String size;
     @CsvField
     private String voltage;
 
@@ -31,14 +31,14 @@ public abstract class AbstractLedProduct extends AbstractCommonDataItem {
         AbstractLedProduct that = (AbstractLedProduct) o;
         return Objects.equals(lightColor, that.lightColor) &&
                 Objects.equals(lightTemperature, that.lightTemperature) &&
+                Objects.equals(ip, that.ip) &&
                 Objects.equals(index, that.index) &&
                 Objects.equals(angle, that.angle) &&
-                Objects.equals(size, that.size) &&
                 Objects.equals(voltage, that.voltage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), lightColor, lightTemperature, index, angle, size, voltage);
+        return Objects.hash(super.hashCode(), lightColor, lightTemperature, ip, index, angle, voltage);
     }
 }

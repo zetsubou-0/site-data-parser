@@ -9,8 +9,6 @@ public abstract class AbstractCommonDataItem extends AbstractDataItem {
     @CsvField
     private String productType;
     @CsvField
-    private String ip;
-    @CsvField
     private String length;
     @CsvField
     private String width;
@@ -36,7 +34,6 @@ public abstract class AbstractCommonDataItem extends AbstractDataItem {
         if (!super.equals(o)) return false;
         AbstractCommonDataItem that = (AbstractCommonDataItem) o;
         return Objects.equals(productType, that.productType) &&
-                Objects.equals(ip, that.ip) &&
                 Objects.equals(length, that.length) &&
                 Objects.equals(width, that.width) &&
                 Objects.equals(height, that.height) &&
@@ -48,6 +45,6 @@ public abstract class AbstractCommonDataItem extends AbstractDataItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), productType, ip, length, width, height, packing, packingType, weight, guaranteePeriod);
+        return Objects.hash(super.hashCode(), productType, length, width, height, packing, packingType, weight, guaranteePeriod);
     }
 }

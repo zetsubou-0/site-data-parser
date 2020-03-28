@@ -16,7 +16,7 @@ public class LedLights extends AbstractLedProduct {
     @CsvField
     private String color;
     @CsvField
-    private String sectionForm;
+    private String sectionShape;
     @CsvField
     private String mountingMethod;
     @CsvField
@@ -36,13 +36,13 @@ public class LedLights extends AbstractLedProduct {
                 Objects.equals(luminousFluxCommon, ledLights.luminousFluxCommon) &&
                 Objects.equals(powerCommonMax, ledLights.powerCommonMax) &&
                 Objects.equals(color, ledLights.color) &&
-                Objects.equals(sectionForm, ledLights.sectionForm) &&
+                Objects.equals(sectionShape, ledLights.sectionShape) &&
                 Objects.equals(mountingMethod, ledLights.mountingMethod) &&
                 Objects.equals(caseType, ledLights.caseType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), series, luminousFluxCommon, powerCommonMax, color, sectionForm, mountingMethod, caseType);
+        return Objects.hash(super.hashCode(), series, luminousFluxCommon, powerCommonMax, color, sectionShape, mountingMethod, caseType);
     }
 }
