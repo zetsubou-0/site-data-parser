@@ -126,7 +126,7 @@ public class DomAdapterImpl implements DomAdapter {
         try {
             TimeUnit.MILLISECONDS.sleep(FAIL_DELAY);
             return supplier.get();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace(System.err);
         }
         return null;
