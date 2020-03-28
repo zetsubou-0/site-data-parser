@@ -34,6 +34,7 @@ public class ParserModules extends AbstractModule {
         this.bind(CsvWriter.class).to(CsvWriterImpl.class).in(Singleton.class);
         this.bind(DomAdapter.class).to(DomAdapterImpl.class).in(Singleton.class);
         this.bind(Helper.class).to(HelperImpl.class).in(Singleton.class);
+        this.bind(ReflectionService.class).to(ReflectionServiceImpl.class).in(Singleton.class);
 
         this.bind(ProcessorFactory.class).to(ProcessorFactoryImpl.class).in(Singleton.class);
 
