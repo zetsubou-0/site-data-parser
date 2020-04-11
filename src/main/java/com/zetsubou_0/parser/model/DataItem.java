@@ -11,6 +11,11 @@ public interface DataItem {
     String getType();
 
     /**
+     * @return category
+     */
+    String getCategory();
+
+    /**
      * @return title
      */
     String getTitle();

@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum CharacteristicsType {
     EMPTY,
     TYPE("Тип"),
+    CATEGORY("Категория"),
     ARTICLE("Артикул", ".product__vendor"),
     TITLE("Заголовок", ".product__title"),
     IMAGE("Изображение", ".slide picture img"),

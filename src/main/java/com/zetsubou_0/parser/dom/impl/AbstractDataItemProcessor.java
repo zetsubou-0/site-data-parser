@@ -8,7 +8,6 @@ import com.zetsubou_0.parser.model.DataItem;
 import com.zetsubou_0.parser.model.DataItemModel;
 import com.zetsubou_0.parser.model.type.CharacteristicsType;
 import com.zetsubou_0.parser.model.type.PageType;
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
 
 import java.lang.reflect.Field;
@@ -40,7 +39,7 @@ public abstract class AbstractDataItemProcessor<T extends DataItem> implements D
                     itemClass,
                     pageType.getType(),
                     helper.extractText(element, CharacteristicsType.TITLE.getSelector()),
-                    helper.extractText(element, CharacteristicsType.ARTICLE.getSelector()).replaceAll("[\\D\\s]", StringUtils.EMPTY),
+                    helper.extractText(element, CharacteristicsType.ARTICLE.getSelector()).replaceAll(".*?\\s*:\\s*(.*?)\\s*", "$1"),
                     helper.extractImage(element, CharacteristicsType.IMAGE.getSelector()),
                     element.select(CharacteristicsType.PRICE.getSelector()).attr(CONTENT)
             );

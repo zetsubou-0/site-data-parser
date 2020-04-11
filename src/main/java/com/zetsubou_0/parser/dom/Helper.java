@@ -4,11 +4,20 @@ import com.zetsubou_0.parser.model.type.CharacteristicsType;
 import org.jsoup.nodes.Element;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public interface Helper {
 
     String HREF = "href";
     String SRC = "src";
+
+    /**
+     * Find first element in the provided element by selector
+     * @param element {@link Element}
+     * @param selector DOM selector
+     * @return optional of the element
+     */
+    Stream<Element> getAllBySelector(Element element, String selector);
 
     /**
      * Find first element in the provided element by selector

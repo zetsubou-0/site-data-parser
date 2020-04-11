@@ -2,8 +2,10 @@ package com.zetsubou_0.parser.dom;
 
 import com.zetsubou_0.parser.model.DataItem;
 import com.zetsubou_0.parser.model.type.PageType;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jsoup.nodes.Document;
 
+import java.util.List;
 import java.util.Set;
 
 public interface DomAdapter {
@@ -15,4 +17,6 @@ public interface DomAdapter {
      * @return list of data items
      */
     Set<DataItem> adapt(Document document, PageType pageType);
+
+    List<Pair<String, String>> adaptToLinks(Document document);
 }

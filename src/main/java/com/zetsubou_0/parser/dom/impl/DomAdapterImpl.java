@@ -7,6 +7,7 @@ import com.zetsubou_0.parser.model.DataItem;
 import com.zetsubou_0.parser.model.type.PageType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,6 +17,7 @@ import org.jsoup.select.Elements;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -30,6 +32,7 @@ public class DomAdapterImpl implements DomAdapter {
 
     private static final String PAGENATION_PARAMETER = "?PAGEN_1=";
     private static final int FAIL_DELAY = 2000;
+    public static final String LINK_SELECTOR = ".categories-list__link";
 
     @Inject
     private ProcessorFactory processorFactory;
@@ -46,6 +49,21 @@ public class DomAdapterImpl implements DomAdapter {
                 .map(processorFactory.create(pageType)::processDomElement)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<Pair<String, String>> adaptToLinks(Document document) {
+        return Optional.ofNullable(document)
+                .map(doc -> helper.getAllBySelector(doc.body(), ".cat_list_categories_in_filter li.active_el > .categories-list.categories-list--sub > li"))
+                .orElseGet(Stream::empty)
+                .filter(Objects::nonNull)
+                .map(this::createUrlNamePair)
+                .filter(pair -> StringUtils.isNotEmpty(pair.getKey()) && StringUtils.isNotEmpty(pair.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    private Pair<String, String> createUrlNamePair(Element element) {
+        return Pair.of(helper.extractLink(element, LINK_SELECTOR), helper.extractText(element, LINK_SELECTOR));
     }
 
     private Function<Element, Stream<Element>> openUrl() {
@@ -104,13 +122,11 @@ public class DomAdapterImpl implements DomAdapter {
     }
 
     private Stream<String> pageUrlStream(Document document) {
-        final String url = document.select(".pagination__item [title=\"Начало\"]").get(0).absUrl(Helper.HREF);
+        final String url = helper.extractLink(document.body(), ".pagination__item [title=\"Начало\"]");
         if (StringUtils.isEmpty(url)) {
             return Stream.empty();
         }
-        final int lastIndex = Optional.of(document.select(".pagination__item [title=\"Конец\"]"))
-                .map(el -> el.get(0))
-                .map(el -> el.absUrl(Helper.HREF))
+        final int lastIndex = Optional.of(helper.extractLink(document.body(), ".pagination__item [title=\"Конец\"]"))
                 .map(fullUrl -> StringUtils.substringAfterLast(fullUrl, PAGENATION_PARAMETER))
                 .map(page -> NumberUtils.toInt(page, -1))
                 .orElse(-1);

@@ -7,6 +7,7 @@ import com.zetsubou_0.parser.model.type.CharacteristicsType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -47,8 +48,19 @@ public class CsvWriterImpl implements CsvWriter {
         writeToFile(path, titleValues, titles, titlesLine, firstTitle);
     }
 
+    @Override
+    public void write(Map<String, Set<DataItem>> writeData) throws IOException {
+        for (Map.Entry<String, Set<DataItem>> item : writeData.entrySet()) {
+            write(item.getKey(), item.getValue());
+        }
+    }
+
     private void writeToFile(String path, Map<String, List<String>> titleValues, List<String> titles,
                              String titlesLine, String firstTitle) throws IOException {
+        if (!createPath(path)) {
+            System.err.println("Cannot create file: " + path);
+            return;
+        }
         try (final FileWriter writer = new FileWriter(path)) {
             writer.append(titlesLine);
             writer.append("\n");
@@ -64,6 +76,12 @@ public class CsvWriterImpl implements CsvWriter {
             }
             writer.flush();
         }
+    }
+
+    private boolean createPath(String path) throws IOException {
+        final File file = new File(path);
+        final File folder = file.getParentFile();
+        return (folder.exists() || folder.mkdirs()) && (file.exists() || file.createNewFile());
     }
 
     private String escape(String text) {

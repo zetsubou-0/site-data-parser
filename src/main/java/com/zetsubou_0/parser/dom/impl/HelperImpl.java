@@ -6,9 +6,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class HelperImpl implements Helper {
+
+    @Override
+    public Stream<Element> getAllBySelector(Element element, String selector) {
+        return Optional.ofNullable(element.select(selector))
+                .map(Collection::stream)
+                .orElseGet(Stream::empty);
+    }
 
     @Override
     public Optional<Element> getFirstBySelector(Element element, String selector) {
