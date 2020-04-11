@@ -52,6 +52,8 @@ public class ParserModules extends AbstractModule {
         processors.addBinding(PageType.ALUMINIUM_CONSTRUCTION).to(AluminiumConstructionDataProcessor.class);
         processors.addBinding(PageType.LED_LIGHTS).to(LedLightsDataProcessor.class);
         processors.addBinding(PageType.LED_DECOR).to(LedDecorDataProcessor.class);
+        processors.addBinding(PageType.CONTROL).to(ControlDataProcessor.class);
+        processors.addBinding(PageType.EXTERIOR_LIGHTING).to(ExteriorLightingProcessor.class);
 
         final MapBinder<Class, DataItemAdapter> categoryProcessors =
                 MapBinder.newMapBinder(this.binder(), Class.class, DataItemAdapter.class);

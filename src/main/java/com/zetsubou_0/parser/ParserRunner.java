@@ -17,6 +17,8 @@ public class ParserRunner implements Runnable {
             .add(Configuration.of("https://arlight.by/catalog/alyuminievye-profili-100011", PageType.ALUMINIUM_CONSTRUCTION, "aluminium-construction"))
             .add(Configuration.of("https://arlight.by/catalog/svetodiodnye-svetilniki-100010", PageType.LED_LIGHTS, "led-lights"))
             .add(Configuration.of("https://arlight.by/catalog/svetodiodnyy-dekor-100019", PageType.LED_DECOR, "led-decor"))
+            .add(Configuration.of("https://arlight.by/catalog/upravlenie-svetom-100008/", PageType.CONTROL, "control"))
+            .add(Configuration.of("https://arlight.by/catalog/svetodiodnye-prozhektory-100018/", PageType.EXTERIOR_LIGHTING, "exterior-lightning"))
             .build();
 
     private final String path;

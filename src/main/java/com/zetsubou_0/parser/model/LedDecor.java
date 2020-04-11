@@ -16,6 +16,8 @@ public class LedDecor extends AbstractLedProduct {
     @CsvField
     private String minSize;
     @CsvField
+    private String voltage;
+    @CsvField
     private String power;
 
     public LedDecor(String type, String title, String article, String image, String price) {
@@ -32,11 +34,12 @@ public class LedDecor extends AbstractLedProduct {
                 Objects.equals(luminousFlux, ledDecor.luminousFlux) &&
                 Objects.equals(density, ledDecor.density) &&
                 Objects.equals(minSize, ledDecor.minSize) &&
+                Objects.equals(voltage, ledDecor.voltage) &&
                 Objects.equals(power, ledDecor.power);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), size, luminousFlux, density, minSize, power);
+        return Objects.hash(super.hashCode(), size, luminousFlux, density, minSize, voltage, power);
     }
 }

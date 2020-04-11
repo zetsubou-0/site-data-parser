@@ -18,6 +18,8 @@ public class LedLine extends AbstractLedProduct {
     @CsvField
     private String luminousFluxCommon;
     @CsvField
+    private String voltage;
+    @CsvField
     private String power;
     @CsvField
     private String powerCommonMax;
@@ -43,6 +45,7 @@ public class LedLine extends AbstractLedProduct {
                 Objects.equals(count, ledLine.count) &&
                 Objects.equals(luminousFlux, ledLine.luminousFlux) &&
                 Objects.equals(luminousFluxCommon, ledLine.luminousFluxCommon) &&
+                Objects.equals(voltage, ledLine.voltage) &&
                 Objects.equals(power, ledLine.power) &&
                 Objects.equals(powerCommonMax, ledLine.powerCommonMax) &&
                 Objects.equals(powerCommon, ledLine.powerCommon) &&
@@ -52,6 +55,6 @@ public class LedLine extends AbstractLedProduct {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), size, density, count, luminousFlux, luminousFluxCommon, power, powerCommonMax, powerCommon, current, minSize);
+        return Objects.hash(super.hashCode(), size, density, count, luminousFlux, luminousFluxCommon, voltage, power, powerCommonMax, powerCommon, current, minSize);
     }
 }

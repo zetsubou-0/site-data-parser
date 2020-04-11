@@ -9,6 +9,8 @@ public enum PageType {
     ALUMINIUM_CONSTRUCTION("Алюминиевые профили"),
     LED_LIGHTS("Светодиодные светильники"),
     LED_DECOR("Светодиодный декор"),
+    CONTROL("Управление светом"),
+    EXTERIOR_LIGHTING("Наружное освещение"),
     ;
 
     private final String type;
