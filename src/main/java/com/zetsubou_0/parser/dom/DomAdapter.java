@@ -12,11 +12,18 @@ public interface DomAdapter {
 
     /**
      * Adapt DOM document representation to list of data items according provided type
+     *
+     * @param url parent URL
      * @param document {@link Document}
      * @param pageType type of page
      * @return list of data items
      */
-    Set<DataItem> adapt(Document document, PageType pageType);
+    Set<DataItem> adapt(String url, Document document, PageType pageType);
 
+    /**
+     * Adapt DOM document representation to list of pairs (url, name)
+     * @param document {@link Document}
+     * @return list of pairs (url, name)
+     */
     List<Pair<String, String>> adaptToLinks(Document document);
 }

@@ -4,7 +4,6 @@ import com.zetsubou_0.parser.dom.Helper;
 import com.zetsubou_0.parser.model.type.CharacteristicsType;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -21,9 +20,7 @@ public class HelperImpl implements Helper {
 
     @Override
     public Optional<Element> getFirstBySelector(Element element, String selector) {
-        return Optional.of(element.select(selector))
-                .filter(elements -> !elements.isEmpty())
-                .map(Elements::first);
+        return Optional.ofNullable(element.selectFirst(selector));
     }
 
     @Override

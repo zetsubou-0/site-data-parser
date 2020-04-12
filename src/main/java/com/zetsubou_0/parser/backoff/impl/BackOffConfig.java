@@ -1,15 +1,15 @@
 package com.zetsubou_0.parser.backoff.impl;
 
 import com.zetsubou_0.parser.backoff.ThrowableConsumer;
+import com.zetsubou_0.parser.backoff.ThrowableSupplier;
 
-import java.util.function.Consumer;
-
-public class BackOffConfig {
+public class BackOffConfig<T> {
     private double delay = 100;
     private double multiplier = 1.5;
     private int max = 60_000;
-    private ThrowableConsumer executor = () -> {};
-    private Consumer<Exception> exceptionLogger = e -> {};
+    private ThrowableConsumer consumer = () -> {};
+    private ThrowableSupplier<T> supplier = () -> null;
+    private String message;
 
     public double getDelay() {
         return delay;
@@ -44,22 +44,30 @@ public class BackOffConfig {
         this.max = max;
     }
 
-    public ThrowableConsumer getExecutor() {
-        return executor;
+    public ThrowableSupplier<T> getSupplier() {
+        return supplier;
     }
 
-    public void setExecutor(ThrowableConsumer executor) {
-        if (executor == null) {
+    public void setSupplier(ThrowableSupplier<T> supplier) {
+        this.supplier = supplier;
+    }
+
+    public ThrowableConsumer getConsumer() {
+        return consumer;
+    }
+
+    public void setConsumer(ThrowableConsumer consumer) {
+        if (consumer == null) {
             return;
         }
-        this.executor = executor;
+        this.consumer = consumer;
     }
 
-    public Consumer<Exception> getExceptionLogger() {
-        return exceptionLogger;
+    public String getMessage() {
+        return message;
     }
 
-    public void setExceptionLogger(Consumer<Exception> exceptionLogger) {
-        this.exceptionLogger = exceptionLogger;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

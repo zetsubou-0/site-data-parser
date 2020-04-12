@@ -40,8 +40,8 @@ public class DomAdapterImpl implements DomAdapter {
     private Helper helper;
 
     @Override
-    public Set<DataItem> adapt(Document document, PageType pageType) {
-        return pageUrlStream(document)
+    public Set<DataItem> adapt(String url, Document document, PageType pageType) {
+        return pageUrlStream(url, document)
                 .flatMap(toDocumentElement())
                 .filter(Objects::nonNull)
                 .flatMap(openUrl())
@@ -121,17 +121,17 @@ public class DomAdapterImpl implements DomAdapter {
         };
     }
 
-    private Stream<String> pageUrlStream(Document document) {
+    private Stream<String> pageUrlStream(String parentUrl, Document document) {
         final String url = helper.extractLink(document.body(), ".pagination__item [title=\"Начало\"]");
         if (StringUtils.isEmpty(url)) {
-            return Stream.empty();
+            return Stream.of(parentUrl);
         }
         final int lastIndex = Optional.of(helper.extractLink(document.body(), ".pagination__item [title=\"Конец\"]"))
                 .map(fullUrl -> StringUtils.substringAfterLast(fullUrl, PAGENATION_PARAMETER))
                 .map(page -> NumberUtils.toInt(page, -1))
                 .orElse(-1);
         if (lastIndex < 0) {
-            return Stream.empty();
+            return Stream.of(parentUrl);
         }
         return IntStream.range(1, lastIndex)
                 .mapToObj(index -> url + PAGENATION_PARAMETER + index)

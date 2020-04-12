@@ -19,5 +19,10 @@ public interface Parser {
      */
     Set<DataItem> extract(String url, PageType pageType) throws IOException;
 
-    List<Pair<String, String>> extractCategoryUtl(String url) throws IOException;
+    /**
+     * Parse data end extract a list with list of pairs with category URL and name
+     * @param url parent URL
+     * @return list of pairs with category URL and name
+     */
+    List<Pair<String, String>> extractCategoryUtl(String url) throws IOException;;
 }

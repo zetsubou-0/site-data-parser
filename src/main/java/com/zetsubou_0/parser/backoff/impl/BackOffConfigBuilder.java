@@ -1,54 +1,60 @@
 package com.zetsubou_0.parser.backoff.impl;
 
 import com.zetsubou_0.parser.backoff.ThrowableConsumer;
+import com.zetsubou_0.parser.backoff.ThrowableSupplier;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.function.Consumer;
-
-public class BackOffConfigBuilder {
-    private final BackOffConfig backOffConfig = new BackOffConfig();
+public class BackOffConfigBuilder<T> {
+    private final BackOffConfig<T> backOffConfig = new BackOffConfig<>();
 
     private BackOffConfigBuilder() {
     }
 
-    public static BackOffConfigBuilder builder() {
-        return new BackOffConfigBuilder();
+    public static <T> BackOffConfigBuilder<T> builder() {
+        return new BackOffConfigBuilder<>();
     }
 
-    public static BackOffConfigBuilder defaultBuilder() {
-        return new BackOffConfigBuilder()
-                .setInitial(100)
-                .setMax(10_000)
+    public static <T> BackOffConfigBuilder<T> defaultBuilder() {
+        return new BackOffConfigBuilder<T>()
+                .setInitial(500)
+                .setMax(30_000)
                 .setMultiplier(2)
-                .setExceptionLogger(Throwable::printStackTrace)
-                .setExecutor(() -> {});
+                .setMessage(StringUtils.EMPTY)
+                .setSupplier(() -> null)
+                .setConsumer(() -> {});
     }
 
-    public BackOffConfigBuilder setInitial(int initial) {
+    public BackOffConfigBuilder<T> setInitial(int initial) {
         backOffConfig.setDelay(initial);
         return this;
     }
 
-    public BackOffConfigBuilder setMultiplier(double multiplier) {
+    public BackOffConfigBuilder<T> setMultiplier(double multiplier) {
         backOffConfig.setMultiplier(multiplier);
         return this;
     }
 
-    public BackOffConfigBuilder setMax(int max) {
+    public BackOffConfigBuilder<T> setMax(int max) {
         backOffConfig.setMax(max);
         return this;
     }
 
-    public BackOffConfigBuilder setExecutor(ThrowableConsumer executor) {
-        backOffConfig.setExecutor(executor);
+    public BackOffConfigBuilder<T> setConsumer(ThrowableConsumer executor) {
+        backOffConfig.setConsumer(executor);
         return this;
     }
 
-    public BackOffConfigBuilder setExceptionLogger(Consumer<Exception> logger) {
-        backOffConfig.setExceptionLogger(logger);
+    public BackOffConfigBuilder<T> setSupplier(ThrowableSupplier<T> executor) {
+        backOffConfig.setSupplier(executor);
         return this;
     }
 
-    public BackOffConfig build() {
+    public BackOffConfigBuilder<T> setMessage(String message) {
+        backOffConfig.setMessage(message);
+        return this;
+    }
+
+    public BackOffConfig<T> build() {
         return backOffConfig;
     }
 }
