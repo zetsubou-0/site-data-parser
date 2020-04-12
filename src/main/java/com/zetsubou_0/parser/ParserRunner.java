@@ -39,6 +39,11 @@ public class ParserRunner implements Runnable {
             configuration.setName(path + "/" + configuration.getName());
             categoryProcessor.processEachCategory(configuration);
         }
+        try {
+            Thread.currentThread().join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         stopWatch.stop();
 
         System.out.println("Total time: " + stopWatch);

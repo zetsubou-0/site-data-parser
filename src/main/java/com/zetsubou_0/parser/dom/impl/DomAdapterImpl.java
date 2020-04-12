@@ -99,7 +99,7 @@ public class DomAdapterImpl implements DomAdapter {
             } catch (HttpStatusException | SocketTimeoutException e) {
                 return retry(() -> loadPage().apply(url));
             } catch (IOException e) {
-                e.printStackTrace(System.err);
+                e.printStackTrace();
                 return null;
             }
         };
@@ -115,7 +115,7 @@ public class DomAdapterImpl implements DomAdapter {
             } catch (HttpStatusException | SocketTimeoutException e) {
                 return retry(() -> toDocumentElement().apply(url));
             } catch (IOException e) {
-                e.printStackTrace(System.err);
+                e.printStackTrace();
                 return Stream.empty();
             }
         };
@@ -143,7 +143,7 @@ public class DomAdapterImpl implements DomAdapter {
             TimeUnit.MILLISECONDS.sleep(FAIL_DELAY);
             return supplier.get();
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            e.printStackTrace();
         }
         return null;
     }

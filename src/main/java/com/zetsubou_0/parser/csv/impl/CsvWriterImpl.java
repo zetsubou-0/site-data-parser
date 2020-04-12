@@ -45,6 +45,7 @@ public class CsvWriterImpl implements CsvWriter {
             return;
         }
 
+        System.out.println("Saving into " + path);
         writeToFile(path, titleValues, titles, titlesLine, firstTitle);
     }
 
@@ -78,7 +79,7 @@ public class CsvWriterImpl implements CsvWriter {
         }
     }
 
-    private boolean createPath(String path) throws IOException {
+    private synchronized boolean createPath(String path) throws IOException {
         final File file = new File(path);
         final File folder = file.getParentFile();
         return (folder.exists() || folder.mkdirs()) && (file.exists() || file.createNewFile());
@@ -124,7 +125,7 @@ public class CsvWriterImpl implements CsvWriter {
                 return (String) val;
             }
         } catch (IllegalAccessException e) {
-            e.printStackTrace(System.err);
+            e.printStackTrace();
         } finally {
             field.setAccessible(access);
         }

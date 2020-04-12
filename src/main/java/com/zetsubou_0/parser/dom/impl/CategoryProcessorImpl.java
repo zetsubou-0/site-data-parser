@@ -4,21 +4,30 @@ import com.google.common.collect.ImmutableMap;
 import com.zetsubou_0.parser.Parser;
 import com.zetsubou_0.parser.adapter.AdapterFactory;
 import com.zetsubou_0.parser.adapter.DataItemAdapter;
+import com.zetsubou_0.parser.backoff.BackOff;
+import com.zetsubou_0.parser.backoff.impl.BackOffConfig;
+import com.zetsubou_0.parser.backoff.impl.BackOffConfigBuilder;
 import com.zetsubou_0.parser.csv.CsvWriter;
 import com.zetsubou_0.parser.dom.CategoryProcessor;
 import com.zetsubou_0.parser.model.AbstractDataItem;
 import com.zetsubou_0.parser.model.Configuration;
 import com.zetsubou_0.parser.model.DataItem;
 import com.zetsubou_0.parser.model.PriceDataItem;
+import com.zetsubou_0.parser.model.type.PageType;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class CategoryProcessorImpl implements CategoryProcessor {
 
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(20);
+    private static final Consumer<Exception> CONSOLE_LOGGER = Throwable::printStackTrace;
     private static final String EXTENSION = ".csv";
 
     @Inject
@@ -27,26 +36,45 @@ public class CategoryProcessorImpl implements CategoryProcessor {
     private CsvWriter csvWriter;
     @Inject
     private AdapterFactory adapterFactory;
+    @Inject
+    private BackOff backOff;
 
     @Override
     public void processEachCategory(Configuration configuration) {
+        final List<Pair<String, String>> urlNames;
         try {
-            final List<Pair<String, String>> urlNames = parser.extractCategoryUtl(configuration.getUrl());
-            for (Pair<String, String> urlName : urlNames) {
-                configuration.setUrl(urlName.getKey());
-                final String path = configuration.getName() + "/"
-                        + urlName.getKey().replaceAll(".*?/([^/]+)/?(\\?.*?)?$", "$1");
-                System.out.println("Processing sub category " +urlName + " has been started");
-                final Set<DataItem> dataItems = updateWithCategory(processEntry(configuration), urlName.getValue());
-                final Map<String, Set<DataItem>> writeData = ImmutableMap.of(
-                        path + EXTENSION, dataItems,
-                        path + "-prices" + EXTENSION, adaptToPriceItems(dataItems)
-                );
-                csvWriter.write(writeData);
-            }
+            urlNames = parser.extractCategoryUtl(configuration.getUrl());
         } catch (IOException e) {
-            e.printStackTrace(System.err);
+            e.printStackTrace();
+            return;
         }
+        for (Pair<String, String> urlName : urlNames) {
+            execute(configuration, urlName);
+        }
+    }
+
+    private void execute(Configuration configuration, Pair<String, String> urlName) {
+        final BackOffConfig config = BackOffConfigBuilder.builder()
+                .setInitial(100)
+                .setMax(10_000)
+                .setMultiplier(1.5)
+                .setExceptionLogger(CONSOLE_LOGGER)
+                .setExecutor(() -> process(urlName, configuration.getPageType(), configuration.getName()))
+                .build();
+        EXECUTOR_SERVICE.execute(() -> backOff.execute(config));
+    }
+
+    private void process(Pair<String, String> urlName, PageType pageType, String name) throws Exception {
+        final Configuration configuration = Configuration.of(urlName.getKey(), pageType, name);
+        final String path = configuration.getName() + "/"
+                + urlName.getKey().replaceAll(".*?/([^/]+)/?(\\?.*?)?$", "$1");
+        System.out.println("Processing sub category " +urlName + " has been started");
+        final Set<DataItem> dataItems = updateWithCategory(processEntry(configuration), urlName.getValue());
+        final Map<String, Set<DataItem>> writeData = ImmutableMap.of(
+                path + EXTENSION, dataItems,
+                path + "-prices" + EXTENSION, adaptToPriceItems(dataItems)
+        );
+        csvWriter.write(writeData);
     }
 
     private Set<DataItem> updateWithCategory(Set<DataItem> processEntry, String category) {
@@ -72,7 +100,7 @@ public class CategoryProcessorImpl implements CategoryProcessor {
         try {
             return parser.extract(configuration.getUrl(), configuration.getPageType());
         } catch (IOException e) {
-            e.printStackTrace(System.err);
+            e.printStackTrace();
         }
         return Collections.emptySet();
     }

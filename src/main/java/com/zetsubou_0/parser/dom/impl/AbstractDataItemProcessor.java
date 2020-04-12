@@ -45,7 +45,7 @@ public abstract class AbstractDataItemProcessor<T extends DataItem> implements D
             );
             return setupSpecificationsData(element, item);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace(System.err);
+            e.printStackTrace();
         }
         return null;
     }

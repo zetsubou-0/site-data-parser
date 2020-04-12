@@ -64,7 +64,7 @@ public class ReflectionServiceImpl implements ReflectionService {
         try {
             field.set(object, value);
         } catch (IllegalAccessException e) {
-            e.printStackTrace(System.err);
+            e.printStackTrace();
         } finally {
             field.setAccessible(accessible);
         }

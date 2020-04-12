@@ -8,6 +8,8 @@ import com.zetsubou_0.parser.adapter.AdapterFactory;
 import com.zetsubou_0.parser.adapter.DataItemAdapter;
 import com.zetsubou_0.parser.adapter.impl.AdapterFactoryImpl;
 import com.zetsubou_0.parser.adapter.impl.PriceAdapter;
+import com.zetsubou_0.parser.backoff.BackOff;
+import com.zetsubou_0.parser.backoff.impl.BackOffImpl;
 import com.zetsubou_0.parser.csv.CsvWriter;
 import com.zetsubou_0.parser.csv.impl.CsvWriterImpl;
 import com.zetsubou_0.parser.dom.*;
@@ -41,6 +43,7 @@ public class ParserModules extends AbstractModule {
         this.bind(Helper.class).to(HelperImpl.class).in(Singleton.class);
         this.bind(ReflectionService.class).to(ReflectionServiceImpl.class).in(Singleton.class);
         this.bind(CategoryProcessor.class).to(CategoryProcessorImpl.class).in(Singleton.class);
+        this.bind(BackOff.class).to(BackOffImpl.class).in(Singleton.class);
 
         this.bind(ProcessorFactory.class).to(ProcessorFactoryImpl.class).in(Singleton.class);
         this.bind(AdapterFactory.class).to(AdapterFactoryImpl.class).in(Singleton.class);
