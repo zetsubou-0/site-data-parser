@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.zetsubou_0.parser.dom.CategoryProcessor;
 import com.zetsubou_0.parser.model.Configuration;
 import com.zetsubou_0.parser.model.type.PageType;
+import org.apache.commons.lang3.time.StopWatch;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -32,9 +33,19 @@ public class ParserRunner implements Runnable {
 
     @Override
     public void run() {
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         for (Configuration configuration : CONFIGURATIONS) {
             configuration.setName(path + "/" + configuration.getName());
             categoryProcessor.processEachCategory(configuration);
         }
+        try {
+            Thread.currentThread().join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        stopWatch.stop();
+
+        System.out.println("Total time: " + stopWatch);
     }
 }
