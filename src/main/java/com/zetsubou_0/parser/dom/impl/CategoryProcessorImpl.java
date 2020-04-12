@@ -57,7 +57,7 @@ public class CategoryProcessorImpl implements CategoryProcessor {
         final BackOffConfig config = BackOffConfigBuilder.builder()
                 .setInitial(100)
                 .setMax(10_000)
-                .setMultiplier(1.5)
+                .setMultiplier(2)
                 .setExceptionLogger(CONSOLE_LOGGER)
                 .setExecutor(() -> process(urlName, configuration.getPageType(), configuration.getName()))
                 .build();
