@@ -4,6 +4,7 @@ import com.zetsubou_0.parser.dom.ReflectionService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -58,6 +59,17 @@ public class ReflectionServiceImpl implements ReflectionService {
     }
 
     @Override
+    public Stream<Field> getAllFieldsWithAnnotation(Class<?> instanceClass, Class<?> searchedParentClass, Class<? extends Annotation> annotation) {
+        final Class<?> parentClass = instanceClass.getSuperclass();
+        final Stream<Field> parentFields = searchedParentClass != null && instanceClass.isAssignableFrom(searchedParentClass)
+                ? getAllFieldsWithAnnotation(parentClass, searchedParentClass, annotation)
+                : Stream.empty();
+        final Stream<Field> currentClassFields = Arrays.stream(instanceClass.getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(annotation));
+        return Stream.concat(parentFields, currentClassFields);
+    }
+
+    @Override
     public void setupFieldValue(Field field, Object object, Object value) {
         boolean accessible = field.isAccessible();
         field.setAccessible(true);
@@ -68,5 +80,24 @@ public class ReflectionServiceImpl implements ReflectionService {
         } finally {
             field.setAccessible(accessible);
         }
+    }
+
+    @Override
+    public <T> T getFieldValue(Field field, Object object, Class<T> returnValueClass) {
+        final boolean access = field.isAccessible();
+        if (!access) {
+            field.setAccessible(true);
+        }
+        try {
+            final Object val = field.get(object);
+            if (returnValueClass.isAssignableFrom(val.getClass())) {
+                return returnValueClass.cast(val);
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } finally {
+            field.setAccessible(access);
+        }
+        return null;
     }
 }

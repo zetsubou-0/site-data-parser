@@ -2,6 +2,7 @@ package com.zetsubou_0.parser.dom;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.stream.Stream;
@@ -46,10 +47,29 @@ public interface ReflectionService {
     Stream<Field> getAllFields(Class<?> instanceClass, Class<?> searchedParentClass);
 
     /**
+     * Return all fields recursively in the class to parent class (do not including it)
+     * @param instanceClass root class
+     * @param searchedParentClass the parent class
+     * @param annotation field annotation
+     * @return all fields recursively in the class to parent class (do not including it)
+     */
+    Stream<Field> getAllFieldsWithAnnotation(Class<?> instanceClass, Class<?> searchedParentClass, Class<? extends Annotation> annotation);
+
+    /**
      * Setup new value of the field
      * @param field {@link Field}
      * @param object object that contains this field
      * @param value new value
      */
     void setupFieldValue(Field field, Object object, Object value);
+
+    /**
+     * Read value from field
+     * @param field {@link Field}
+     * @param object object that contains this field
+     * @param returnValueClass class of return type
+     * @param <T> return type
+     * @return value of the field or null
+     */
+    <T> T getFieldValue(Field field, Object object, Class<T> returnValueClass);
 }

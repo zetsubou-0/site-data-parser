@@ -2,11 +2,13 @@ package com.zetsubou_0.parser.csv.impl;
 
 import com.zetsubou_0.parser.csv.CsvField;
 import com.zetsubou_0.parser.csv.CsvWriter;
+import com.zetsubou_0.parser.dom.ReflectionService;
 import com.zetsubou_0.parser.model.DataItem;
 import com.zetsubou_0.parser.model.type.CharacteristicsType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,6 +26,9 @@ public class CsvWriterImpl implements CsvWriter {
         oldVal.addAll(newVal);
         return oldVal;
     };
+
+    @Inject
+    private ReflectionService reflectionService;
 
     @Override
     public void write(String path, Set<DataItem> data) throws IOException {
@@ -90,7 +95,7 @@ public class CsvWriterImpl implements CsvWriter {
     }
 
     private Stream<Pair<String, List<String>>> prepareData(DataItem dataItem) {
-        return getAllCsvFields(dataItem.getClass())
+        return reflectionService.getAllFieldsWithAnnotation(dataItem.getClass(), null, CsvField.class)
                 .map(getFiledTitleAndValue(dataItem))
                 .filter(Objects::nonNull);
     }
@@ -101,7 +106,7 @@ public class CsvWriterImpl implements CsvWriter {
             if (annotation == null) {
                 return null;
             }
-            String value = getFieldValue(field, dataItem);
+            String value = reflectionService.getFieldValue(field, dataItem, String.class);
             if (value == null) {
                 value = StringUtils.EMPTY;
             }
@@ -112,33 +117,5 @@ public class CsvWriterImpl implements CsvWriter {
             }
             return Pair.of(annotation.value().getHeader(), list);
         };
-    }
-
-    private String getFieldValue(Field field, DataItem dataItem) {
-        final boolean access = field.isAccessible();
-        if (!access) {
-            field.setAccessible(true);
-        }
-        try {
-            final Object val = field.get(dataItem);
-            if (val instanceof String) {
-                return (String) val;
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } finally {
-            field.setAccessible(access);
-        }
-        return null;
-    }
-
-    private Stream<Field> getAllCsvFields(Class<?> cl) {
-        final Class<?> parentClass = cl.getSuperclass();
-        final Stream<Field> parentFields = parentClass != null
-                ? getAllCsvFields(parentClass)
-                : Stream.empty();
-        final Stream<Field> currentClassFields = Arrays.stream(cl.getDeclaredFields())
-                .filter(field -> field.isAnnotationPresent(CsvField.class));
-        return Stream.concat(parentFields, currentClassFields);
     }
 }
