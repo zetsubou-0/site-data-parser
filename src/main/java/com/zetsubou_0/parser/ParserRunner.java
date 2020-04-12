@@ -2,6 +2,7 @@ package com.zetsubou_0.parser;
 
 import com.google.common.collect.ImmutableList;
 import com.zetsubou_0.parser.dom.CategoryProcessor;
+import com.zetsubou_0.parser.model.ApplicationConfiguration;
 import com.zetsubou_0.parser.model.Configuration;
 import com.zetsubou_0.parser.model.type.PageType;
 import org.apache.commons.lang3.time.StopWatch;
@@ -21,14 +22,16 @@ public class ParserRunner implements Runnable {
             .add(Configuration.of("https://arlight.by/catalog/svetodiodnye-prozhektory-100018/", PageType.EXTERIOR_LIGHTING, "exterior-lightning"))
             .build();
 
-    private final String path;
+    private final String fileRootPath;
 
     @Inject
     private CategoryProcessor categoryProcessor;
+    @Inject
+    private TaskExecutor taskExecutor;
 
     @Inject
-    public ParserRunner(String path) {
-        this.path = path;
+    public ParserRunner(ApplicationConfiguration configuration) {
+        this.fileRootPath = configuration.getFileRootPath();
     }
 
     @Override
@@ -36,14 +39,10 @@ public class ParserRunner implements Runnable {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         for (Configuration configuration : CONFIGURATIONS) {
-            configuration.setName(path + "/" + configuration.getName());
+            configuration.setName(fileRootPath + "/" + configuration.getName());
             categoryProcessor.processEachCategory(configuration);
         }
-        try {
-            Thread.currentThread().join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        taskExecutor.awaitShutdown();
         stopWatch.stop();
 
         System.out.println("Total time: " + stopWatch);

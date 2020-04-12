@@ -61,7 +61,7 @@ public class ReflectionServiceImpl implements ReflectionService {
     @Override
     public Stream<Field> getAllFieldsWithAnnotation(Class<?> instanceClass, Class<?> searchedParentClass, Class<? extends Annotation> annotation) {
         final Class<?> parentClass = instanceClass.getSuperclass();
-        final Stream<Field> parentFields = searchedParentClass != null && instanceClass.isAssignableFrom(searchedParentClass)
+        final Stream<Field> parentFields = parentClass != null && (searchedParentClass == null || instanceClass.isAssignableFrom(searchedParentClass))
                 ? getAllFieldsWithAnnotation(parentClass, searchedParentClass, annotation)
                 : Stream.empty();
         final Stream<Field> currentClassFields = Arrays.stream(instanceClass.getDeclaredFields())

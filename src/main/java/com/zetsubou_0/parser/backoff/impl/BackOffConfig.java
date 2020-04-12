@@ -1,7 +1,7 @@
 package com.zetsubou_0.parser.backoff.impl;
 
-import com.zetsubou_0.parser.backoff.ThrowableConsumer;
-import com.zetsubou_0.parser.backoff.ThrowableSupplier;
+import com.zetsubou_0.parser.ThrowableConsumer;
+import com.zetsubou_0.parser.ThrowableSupplier;
 
 public class BackOffConfig<T> {
     private double delay = 100;

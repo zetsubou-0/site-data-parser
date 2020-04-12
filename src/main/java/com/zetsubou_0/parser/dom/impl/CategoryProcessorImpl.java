@@ -2,6 +2,7 @@ package com.zetsubou_0.parser.dom.impl;
 
 import com.google.common.collect.ImmutableMap;
 import com.zetsubou_0.parser.Parser;
+import com.zetsubou_0.parser.TaskExecutor;
 import com.zetsubou_0.parser.adapter.AdapterFactory;
 import com.zetsubou_0.parser.adapter.DataItemAdapter;
 import com.zetsubou_0.parser.csv.CsvWriter;
@@ -16,13 +17,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class CategoryProcessorImpl implements CategoryProcessor {
 
-    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(16);
     private static final String EXTENSION = ".csv";
 
     @Inject
@@ -31,6 +29,8 @@ public class CategoryProcessorImpl implements CategoryProcessor {
     private CsvWriter csvWriter;
     @Inject
     private AdapterFactory adapterFactory;
+    @Inject
+    private TaskExecutor taskExecutor;
 
     @Override
     public void processEachCategory(Configuration configuration) {
@@ -42,7 +42,7 @@ public class CategoryProcessorImpl implements CategoryProcessor {
             return;
         }
         for (Pair<String, String> urlName : urlNames) {
-            EXECUTOR_SERVICE.execute(() -> process(urlName, configuration.getPageType(), configuration.getName()));
+            taskExecutor.execute(() -> process(urlName, configuration.getPageType(), configuration.getName()));
         }
     }
 

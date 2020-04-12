@@ -1,8 +1,8 @@
 package com.zetsubou_0.parser.backoff.impl;
 
 import com.zetsubou_0.parser.backoff.BackOff;
-import com.zetsubou_0.parser.backoff.ThrowableConsumer;
-import com.zetsubou_0.parser.backoff.ThrowableSupplier;
+import com.zetsubou_0.parser.ThrowableConsumer;
+import com.zetsubou_0.parser.ThrowableSupplier;
 
 public class BackOffImpl implements BackOff {
 
