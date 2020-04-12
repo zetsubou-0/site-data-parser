@@ -4,7 +4,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.zetsubou_0.parser.di.modules.ParserModules;
 import com.zetsubou_0.parser.model.ApplicationConfiguration;
-import org.apache.commons.lang3.math.NumberUtils;
 
 public class ParserApp {
 
