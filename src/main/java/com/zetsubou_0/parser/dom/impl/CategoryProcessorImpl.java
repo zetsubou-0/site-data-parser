@@ -21,13 +21,11 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class CategoryProcessorImpl implements CategoryProcessor {
 
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(20);
-    private static final Consumer<Exception> CONSOLE_LOGGER = Throwable::printStackTrace;
     private static final String EXTENSION = ".csv";
 
     @Inject
@@ -54,11 +52,7 @@ public class CategoryProcessorImpl implements CategoryProcessor {
     }
 
     private void execute(Configuration configuration, Pair<String, String> urlName) {
-        final BackOffConfig config = BackOffConfigBuilder.builder()
-                .setInitial(100)
-                .setMax(10_000)
-                .setMultiplier(2)
-                .setExceptionLogger(CONSOLE_LOGGER)
+        final BackOffConfig config = BackOffConfigBuilder.defaultBuilder()
                 .setExecutor(() -> process(urlName, configuration.getPageType(), configuration.getName()))
                 .build();
         EXECUTOR_SERVICE.execute(() -> backOff.execute(config));

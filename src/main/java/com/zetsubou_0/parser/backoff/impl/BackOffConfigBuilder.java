@@ -17,9 +17,9 @@ public class BackOffConfigBuilder {
     public static BackOffConfigBuilder defaultBuilder() {
         return new BackOffConfigBuilder()
                 .setInitial(100)
-                .setMax(5000)
-                .setMultiplier(1.5)
-                .setExceptionLogger(e -> {})
+                .setMax(10_000)
+                .setMultiplier(2)
+                .setExceptionLogger(Throwable::printStackTrace)
                 .setExecutor(() -> {});
     }
 
