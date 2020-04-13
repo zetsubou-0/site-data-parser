@@ -4,38 +4,30 @@ import com.zetsubou_0.parser.TaskExecutor;
 import com.zetsubou_0.parser.model.ApplicationConfiguration;
 
 import javax.inject.Inject;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 public class FixedTaskExecutor implements TaskExecutor {
 
-    private final ExecutorService executorService;
+    private final Semaphore semaphore;
+
+    private boolean submitted;
 
     @Inject
     public FixedTaskExecutor(ApplicationConfiguration configuration) {
-        executorService = Executors.newFixedThreadPool(configuration.getThreadPoolSize());
+        semaphore = new Semaphore(configuration.getThreadPoolSize());
     }
 
     @Override
     public void execute(Runnable runnable) {
-        executorService.execute(runnable);
-    }
-
-    @Override
-    public void awaitShutdown(int time, TimeUnit timeUnit) {
-        try {
-            executorService.awaitTermination(time, timeUnit);
-            if (!executorService.isShutdown() && !executorService.isTerminated()) {
-                executorService.shutdown();
+        new Thread(() -> {
+            try {
+                semaphore.tryAcquire(30, TimeUnit.MINUTES);
+                runnable.run();
+                semaphore.release();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void awaitShutdown() {
-        awaitShutdown(60, TimeUnit.MINUTES);
+        }).start();
     }
 }
