@@ -48,6 +48,7 @@ public class DomAdapterImpl implements DomAdapter {
                 .filter(Objects::nonNull)
                 .map(processorFactory.create(pageType)::processDomElement)
                 .filter(Objects::nonNull)
+                .filter(dataItem -> dataItem.getPrice().matches("\\d+(\\.\\d+)?"))
                 .collect(Collectors.toSet());
     }
 
