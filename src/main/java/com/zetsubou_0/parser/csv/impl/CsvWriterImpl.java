@@ -9,10 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.inject.Inject;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -67,7 +66,7 @@ public class CsvWriterImpl implements CsvWriter {
             System.err.println("Cannot create file: " + path);
             return;
         }
-        try (final FileWriter writer = new FileWriter(path)) {
+        try (final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8))) {
             writer.append(titlesLine);
             writer.append("\n");
             final int size = titleValues.get(firstTitle).size();
