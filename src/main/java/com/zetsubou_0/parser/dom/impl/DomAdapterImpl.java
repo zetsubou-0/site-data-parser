@@ -8,7 +8,6 @@ import com.zetsubou_0.parser.model.type.PageType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,7 +15,6 @@ import org.jsoup.select.Elements;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -97,11 +95,11 @@ public class DomAdapterImpl implements DomAdapter {
                     return null;
                 }
                 return elements.get(0);
-            } catch (HttpStatusException | SocketTimeoutException e) {
-                return retry(() -> loadPage().apply(url));
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
+            } catch (Exception e) {
+                return retry(() -> loadPage().apply(url));
             }
         };
     }
@@ -113,11 +111,11 @@ public class DomAdapterImpl implements DomAdapter {
                         .get()
                         .select(".catalog-block__item.card")
                         .stream();
-            } catch (HttpStatusException | SocketTimeoutException e) {
-                return retry(() -> toDocumentElement().apply(url));
             } catch (IOException e) {
                 e.printStackTrace();
                 return Stream.empty();
+            } catch (Exception e) {
+                return retry(() -> toDocumentElement().apply(url));
             }
         };
     }

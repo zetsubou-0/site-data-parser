@@ -26,8 +26,8 @@ public class Control extends AbstractCommonDataItem {
     @CsvField
     private String sizeThreeD;
 
-    public Control(String type, String title, String article, String image, String price) {
-        super(type, title, article, image, price);
+    public Control(String type, String title, String description, String article, String image, String price) {
+        super(type, title, description, article, image, price);
     }
 
     @Override

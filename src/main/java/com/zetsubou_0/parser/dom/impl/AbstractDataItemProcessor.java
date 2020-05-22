@@ -39,6 +39,7 @@ public abstract class AbstractDataItemProcessor<T extends DataItem> implements D
                     itemClass,
                     pageType.getType(),
                     helper.extractText(element, CharacteristicsType.TITLE.getSelector()),
+                    helper.extractText(element, CharacteristicsType.DESCRIPTION.getSelector()),
                     helper.extractText(element, CharacteristicsType.ARTICLE.getSelector()).replaceAll(".*?\\s*:\\s*(.*?)\\s*", "$1"),
                     helper.extractImage(element, CharacteristicsType.IMAGE.getSelector()),
                     element.select(CharacteristicsType.PRICE.getSelector()).attr(CONTENT)

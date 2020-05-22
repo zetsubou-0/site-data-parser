@@ -36,8 +36,8 @@ public class PowerBlock extends AbstractCommonDataItem {
     @CsvField
     private String inrushCurrent;
 
-    public PowerBlock(String type, String title, String article, String image, String price) {
-        super(type, title, article, image, price);
+    public PowerBlock(String type, String title, String description, String article, String image, String price) {
+        super(type, title, description, article, image, price);
     }
 
     @Override

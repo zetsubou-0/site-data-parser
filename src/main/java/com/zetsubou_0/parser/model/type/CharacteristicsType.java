@@ -9,6 +9,7 @@ public enum CharacteristicsType {
     CATEGORY("Категория"),
     ARTICLE("Артикул", ".product__vendor"),
     TITLE("Заголовок", ".product__title"),
+    DESCRIPTION("Описание", ".specifications__text"),
     IMAGE("Изображение", ".slide picture img"),
     PRICE("Цена", ".card__price-now .price"),
     SECTION_SHAPE("Форма (сечение)", "T_57"),

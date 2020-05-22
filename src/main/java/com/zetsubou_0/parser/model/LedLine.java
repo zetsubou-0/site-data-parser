@@ -30,8 +30,8 @@ public class LedLine extends AbstractLedProduct {
     @CsvField
     private String minSize;
 
-    public LedLine(String type, String title, String article, String image, String price) {
-        super(type, title, article, image, price);
+    public LedLine(String type, String title, String description, String article, String image, String price) {
+        super(type, title, description, article, image, price);
     }
 
     @Override

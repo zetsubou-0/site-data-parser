@@ -20,8 +20,8 @@ public class LedDecor extends AbstractLedProduct {
     @CsvField
     private String power;
 
-    public LedDecor(String type, String title, String article, String image, String price) {
-        super(type, title, article, image, price);
+    public LedDecor(String type, String title, String description, String article, String image, String price) {
+        super(type, title, description, article, image, price);
     }
 
     @Override

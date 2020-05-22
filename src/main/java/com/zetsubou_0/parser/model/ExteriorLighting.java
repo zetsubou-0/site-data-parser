@@ -18,8 +18,8 @@ public class ExteriorLighting extends AbstractLedProduct {
     @CsvField
     private String mountingMethod;
 
-    public ExteriorLighting(String type, String title, String article, String image, String price) {
-        super(type, title, article, image, price);
+    public ExteriorLighting(String type, String title, String description, String article, String image, String price) {
+        super(type, title, description, article, image, price);
     }
 
     @Override

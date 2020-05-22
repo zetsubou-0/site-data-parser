@@ -15,13 +15,16 @@ public abstract class AbstractDataItem implements DataItem {
     @CsvField
     private final String title;
     @CsvField
+    private final String description;
+    @CsvField
     private final String image;
     private final String price;
 
-    public AbstractDataItem(String type, String title, String article, String image, String price) {
+    public AbstractDataItem(String type, String title, String description, String article, String image, String price) {
         this.type = type;
-        this.title = title;
         this.article = article;
+        this.title = title;
+        this.description = description;
         this.image = image;
         this.price = price;
     }
@@ -39,6 +42,10 @@ public abstract class AbstractDataItem implements DataItem {
     @Override
     public String getTitle() {
         return title;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Override
@@ -70,12 +77,13 @@ public abstract class AbstractDataItem implements DataItem {
                 Objects.equals(category, that.category) &&
                 Objects.equals(article, that.article) &&
                 Objects.equals(title, that.title) &&
+                Objects.equals(description, that.description) &&
                 Objects.equals(image, that.image) &&
                 Objects.equals(price, that.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, category, article, title, image, price);
+        return Objects.hash(type, category, article, title, description, image, price);
     }
 }

@@ -17,8 +17,8 @@ public abstract class AbstractLedProduct extends AbstractCommonDataItem {
     @CsvField
     private String angle;
 
-    public AbstractLedProduct(String type, String title, String article, String image, String price) {
-        super(type, title, article, image, price);
+    public AbstractLedProduct(String type, String title, String description, String article, String image, String price) {
+        super(type, title, description, article, image, price);
     }
 
     @Override
