@@ -11,6 +11,8 @@ public abstract class AbstractDataItem implements DataItem {
     @CsvField
     private String category;
     @CsvField
+    private final String brand = "Arlight";
+    @CsvField
     private final String article;
     @CsvField
     private final String title;
@@ -84,6 +86,6 @@ public abstract class AbstractDataItem implements DataItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, category, article, title, description, image, price);
+        return Objects.hash(type, category, brand, article, title, description, image, price);
     }
 }

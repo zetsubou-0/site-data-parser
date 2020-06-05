@@ -7,6 +7,7 @@ public enum CharacteristicsType {
     EMPTY,
     TYPE("Тип"),
     CATEGORY("Категория"),
+    BRAND("Бренд"),
     ARTICLE("Артикул", ".product__vendor"),
     TITLE("Заголовок", ".product__title"),
     DESCRIPTION("Описание", ".specifications__text"),

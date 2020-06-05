@@ -10,6 +10,8 @@ public class PriceDataItem implements DataItem {
     private final String article;
     @CsvField
     private final String price;
+    @CsvField
+    private final String brand = "Arlight";
 
     public PriceDataItem(String article, String price) {
         this.article = article;
@@ -57,6 +59,6 @@ public class PriceDataItem implements DataItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(article, price);
+        return Objects.hash(article, price, brand);
     }
 }
