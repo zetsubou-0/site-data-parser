@@ -15,6 +15,7 @@ import com.zetsubou_0.parser.model.type.PageType;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.inject.Inject;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -42,13 +43,13 @@ public class CategoryProcessorImpl implements CategoryProcessor {
             return;
         }
         for (Pair<String, String> urlName : urlNames) {
-            taskExecutor.execute(() -> process(urlName, configuration.getPageType(), configuration.getName()));
+            taskExecutor.execute(() -> process(urlName, configuration));
         }
     }
 
-    private void process(Pair<String, String> urlName, PageType pageType, String name) {
+    private void process(Pair<String, String> urlName, Configuration conf) {
         try {
-            final Configuration configuration = Configuration.of(urlName.getKey(), pageType, name);
+            final Configuration configuration = Configuration.of(urlName.getKey(), conf.getPageType(), conf.getName());
             final String path = configuration.getName() + "/"
                     + urlName.getKey().replaceAll(".*?/([^/]+)/?(\\?.*?)?$", "$1");
             System.out.println("Processing sub category " +urlName + " has been started");
@@ -56,10 +57,14 @@ public class CategoryProcessorImpl implements CategoryProcessor {
                     parser.extract(configuration.getUrl(), configuration.getPageType()),
                     urlName.getValue()
             );
-            final Map<String, Set<DataItem>> writeData = ImmutableMap.of(
-                    path + EXTENSION, dataItems,
-                    path + "-prices" + EXTENSION, adaptToPriceItems(dataItems)
-            );
+            final Set<DataItem> prices = adaptToPriceItems(dataItems);
+            final ImmutableMap.Builder<String, Set<DataItem>> builder = ImmutableMap.builder();
+            builder.put(path + EXTENSION, dataItems);
+            builder.put(path + "-prices" + EXTENSION, prices);
+            if (conf.getPageType() == PageType.EXTERIOR_LIGHTING || conf.getPageType() == PageType.LED_LIGHTS) {
+                builder.put(new File(configuration.getName()).getParent() + "/all-prices" + EXTENSION, prices);
+            }
+            final Map<String, Set<DataItem>> writeData = builder.build();
             csvWriter.write(writeData);
         } catch (IOException e) {
             e.printStackTrace();

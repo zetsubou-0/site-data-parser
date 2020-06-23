@@ -1,6 +1,7 @@
 package com.zetsubou_0.parser.model;
 
 import com.zetsubou_0.parser.csv.CsvField;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.Objects;
 
@@ -15,7 +16,7 @@ public class PriceDataItem implements DataItem {
 
     public PriceDataItem(String article, String price) {
         this.article = article;
-        this.price = price;
+        this.price = correctPrice(price);
     }
 
     @Override
@@ -46,6 +47,10 @@ public class PriceDataItem implements DataItem {
     @Override
     public String getPrice() {
         return price;
+    }
+
+    private String correctPrice(String price) {
+        return String.format("%.2f", Math.round(NumberUtils.createDouble(price) * 10) / 10.0);
     }
 
     @Override

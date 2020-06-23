@@ -1,5 +1,8 @@
 package com.zetsubou_0.parser.dom.impl;
 
+import com.zetsubou_0.parser.backoff.BackOff;
+import com.zetsubou_0.parser.backoff.impl.BackOffConfig;
+import com.zetsubou_0.parser.backoff.impl.BackOffConfigBuilder;
 import com.zetsubou_0.parser.dom.DomAdapter;
 import com.zetsubou_0.parser.dom.Helper;
 import com.zetsubou_0.parser.dom.ProcessorFactory;
@@ -14,14 +17,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import javax.inject.Inject;
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -29,13 +29,14 @@ import java.util.stream.Stream;
 public class DomAdapterImpl implements DomAdapter {
 
     private static final String PAGENATION_PARAMETER = "?PAGEN_1=";
-    private static final int FAIL_DELAY = 2000;
-    public static final String LINK_SELECTOR = ".categories-list__link";
+    private static final String LINK_SELECTOR = ".categories-list__link";
 
     @Inject
     private ProcessorFactory processorFactory;
     @Inject
     private Helper helper;
+    @Inject
+    private BackOff backOff;
 
     @Override
     public Set<DataItem> adapt(String url, Document document, PageType pageType) {
@@ -87,35 +88,41 @@ public class DomAdapterImpl implements DomAdapter {
 
     private Function<String, Element> loadPage() {
         return url -> {
+            final BackOffConfig<Element> config = BackOffConfigBuilder.<Element>defaultBuilder()
+                    .setMessage("URL: " + url)
+                    .setSupplier(() -> {
+                        final Elements elements = Jsoup.connect(url)
+                                .get()
+                                .select(".container");
+                        if (elements == null || elements.isEmpty()) {
+                            return null;
+                        }
+                        return elements.get(0);
+                    })
+                    .build();
             try {
-                final Elements elements = Jsoup.connect(url)
-                        .get()
-                        .select(".container");
-                if (elements == null || elements.isEmpty()) {
-                    return null;
-                }
-                return elements.get(0);
-            } catch (IOException e) {
+                return backOff.produce(config);
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
-            } catch (Exception e) {
-                return retry(() -> loadPage().apply(url));
             }
         };
     }
 
     private Function<String, Stream<Element>> toDocumentElement() {
         return url -> {
+            final BackOffConfig<Stream<Element>> config = BackOffConfigBuilder.<Stream<Element>>defaultBuilder()
+                .setMessage("URL: " + url)
+                .setSupplier(() -> Jsoup.connect(url)
+                            .get()
+                            .select(".catalog-block__item.card")
+                            .stream())
+                .build();
             try {
-                return Jsoup.connect(url)
-                        .get()
-                        .select(".catalog-block__item.card")
-                        .stream();
-            } catch (IOException e) {
+                return backOff.produce(config);
+            } catch (Exception e) {
                 e.printStackTrace();
                 return Stream.empty();
-            } catch (Exception e) {
-                return retry(() -> toDocumentElement().apply(url));
             }
         };
     }
@@ -135,15 +142,5 @@ public class DomAdapterImpl implements DomAdapter {
         return IntStream.range(1, lastIndex)
                 .mapToObj(index -> url + PAGENATION_PARAMETER + index)
                 .parallel();
-    }
-
-    private <T> T retry(Supplier<T> supplier) {
-        try {
-            TimeUnit.MILLISECONDS.sleep(FAIL_DELAY);
-            return supplier.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

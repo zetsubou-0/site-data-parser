@@ -11,7 +11,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.inject.Inject;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -60,15 +59,18 @@ public class CsvWriterImpl implements CsvWriter {
         }
     }
 
-    private void writeToFile(String path, Map<String, List<String>> titleValues, List<String> titles,
-                             String titlesLine, String firstTitle) throws IOException {
+    private synchronized void writeToFile(String path, Map<String, List<String>> titleValues, List<String> titles,
+                                          String titlesLine, String firstTitle) throws IOException {
+        final boolean fileExists = new File(path).exists();
         if (!createPath(path)) {
             System.err.println("Cannot create file: " + path);
             return;
         }
-        try (final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8))) {
-            writer.append(titlesLine);
-            writer.append("\n");
+        try (final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path, true), "cp1251"))) {
+            if (!fileExists) {
+                writer.append(titlesLine);
+                writer.append("\r\n");
+            }
             final int size = titleValues.get(firstTitle).size();
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < titles.size(); j++) {
@@ -77,7 +79,7 @@ public class CsvWriterImpl implements CsvWriter {
                         writer.append(SEPARATOR);
                     }
                 }
-                writer.append("\n");
+                writer.append("\r\n");
             }
             writer.flush();
         }
