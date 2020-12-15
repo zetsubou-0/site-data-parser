@@ -4,6 +4,8 @@ import com.zetsubou_0.parser.ThrowableConsumer;
 import com.zetsubou_0.parser.ThrowableSupplier;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Random;
+
 public class BackOffConfigBuilder<T> {
     private final BackOffConfig<T> backOffConfig = new BackOffConfig<>();
 
@@ -15,10 +17,11 @@ public class BackOffConfigBuilder<T> {
     }
 
     public static <T> BackOffConfigBuilder<T> defaultBuilder() {
+        final Random random = new Random();
         return new BackOffConfigBuilder<T>()
-                .setInitial(500)
+                .setInitial(300 + random.nextInt(300))
                 .setMax(30_000)
-                .setMultiplier(2)
+                .setMultiplier(1 + random.nextDouble() * 0.2)
                 .setMessage(StringUtils.EMPTY)
                 .setSupplier(() -> null)
                 .setConsumer(() -> {});

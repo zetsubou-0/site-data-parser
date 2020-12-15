@@ -7,11 +7,11 @@ import java.util.Objects;
 public abstract class AbstractDataItem implements DataItem {
 
     @CsvField
+    private final String brand = "Arlight";
+    @CsvField
     private final String type;
     @CsvField
     private String category;
-    @CsvField
-    private final String brand = "Arlight";
     @CsvField
     private final String article;
     @CsvField

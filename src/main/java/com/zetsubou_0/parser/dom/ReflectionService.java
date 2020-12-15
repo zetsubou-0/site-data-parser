@@ -72,4 +72,11 @@ public interface ReflectionService {
      * @return value of the field or null
      */
     <T> T getFieldValue(Field field, Object object, Class<T> returnValueClass);
+
+    /**
+     * Return csv annotation filed name
+     * @param field
+     * @return
+     */
+    String getCsvFieldName(Field field);
 }

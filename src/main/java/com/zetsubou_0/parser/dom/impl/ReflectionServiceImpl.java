@@ -1,13 +1,18 @@
 package com.zetsubou_0.parser.dom.impl;
 
+import com.zetsubou_0.parser.csv.CsvField;
 import com.zetsubou_0.parser.dom.ReflectionService;
+import com.zetsubou_0.parser.model.type.CharacteristicsType;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 public class ReflectionServiceImpl implements ReflectionService {
@@ -90,6 +95,9 @@ public class ReflectionServiceImpl implements ReflectionService {
         }
         try {
             final Object val = field.get(object);
+            if (val == null) {
+                return null;
+            }
             if (returnValueClass.isAssignableFrom(val.getClass())) {
                 return returnValueClass.cast(val);
             }
@@ -100,4 +108,21 @@ public class ReflectionServiceImpl implements ReflectionService {
         }
         return null;
     }
+
+    @Override
+    public String getCsvFieldName(Field field) {
+        return Optional.ofNullable(field)
+                .map(f -> f.getAnnotation(CsvField.class))
+                .map(CsvField::value)
+                .map(toHeader(field))
+                .map(CharacteristicsType::getHeader)
+                .orElse(StringUtils.EMPTY);
+    }
+
+    private UnaryOperator<CharacteristicsType> toHeader(Field field) {
+        return characteristicsType -> characteristicsType == CharacteristicsType.EMPTY
+                ? CharacteristicsType.of(field.getName())
+                : characteristicsType;
+    }
+
 }

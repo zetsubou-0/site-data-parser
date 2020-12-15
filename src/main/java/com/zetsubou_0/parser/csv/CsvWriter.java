@@ -22,4 +22,10 @@ public interface CsvWriter {
      * @throws IOException
      */
     void write(Map<String, Set<DataItem>> writeData) throws IOException;
+
+    void clearResults();
+
+    void appendToResults(Set<DataItem> dataItems);
+
+    void flushResults(String file) throws IOException;
 }

@@ -1,10 +1,14 @@
 package com.zetsubou_0.parser.backoff.impl;
 
-import com.zetsubou_0.parser.backoff.BackOff;
 import com.zetsubou_0.parser.ThrowableConsumer;
 import com.zetsubou_0.parser.ThrowableSupplier;
+import com.zetsubou_0.parser.backoff.BackOff;
+
+import java.util.Random;
 
 public class BackOffImpl implements BackOff {
+
+    private static final Random RANDOM = new Random();
 
     @Override
     public void execute(BackOffConfig<?> config) throws Exception {
@@ -34,19 +38,23 @@ public class BackOffImpl implements BackOff {
 
     private void handleException(BackOffConfig<?> config, ThrowableConsumer executor, double currentDelay, Exception e) throws Exception {
         handle(config, currentDelay, e);
-        execute(config, executor, currentDelay * config.getMultiplier());
+        execute(config, executor, calculateDelay(currentDelay, config));
     }
 
     private <T> T handleExceptionWithReturn(BackOffConfig<T> config, ThrowableSupplier<T> executor, double currentDelay, Exception e) throws Exception {
         handle(config, currentDelay, e);
-        return executeWithReturn(config, executor, currentDelay * config.getMultiplier());
+        return executeWithReturn(config, executor, calculateDelay(currentDelay, config));
     }
 
     private void handle(BackOffConfig<?> config, double currentDelay, Exception e) throws Exception {
         if (currentDelay >= config.getMax()) {
             throw new Exception("Maximum number of attempts reached. ", e);
         }
-        System.out.println(String.format("Performing action with %.2f ms delay. %s", currentDelay, config.getMessage()));
+//        System.out.println(String.format("Performing action with %.2f ms delay. %s", currentDelay, config.getMessage()));
         Thread.sleep((long) currentDelay);
+    }
+
+    private <T> double calculateDelay(double currentDelay, BackOffConfig<T> config) {
+        return currentDelay * (config.getMultiplier() + RANDOM.nextDouble() * 0.4);
     }
 }

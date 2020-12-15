@@ -8,11 +8,11 @@ import java.util.Objects;
 public class PriceDataItem implements DataItem {
 
     @CsvField
+    private final String brand = "Arlight";
+    @CsvField
     private final String article;
     @CsvField
     private final String price;
-    @CsvField
-    private final String brand = "Arlight";
 
     public PriceDataItem(String article, String price) {
         this.article = article;

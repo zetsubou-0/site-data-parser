@@ -1,12 +1,14 @@
 package com.zetsubou_0.parser;
 
 import com.google.common.collect.ImmutableList;
+import com.zetsubou_0.parser.csv.CsvWriter;
 import com.zetsubou_0.parser.dom.CategoryProcessor;
 import com.zetsubou_0.parser.model.ApplicationConfiguration;
 import com.zetsubou_0.parser.model.Configuration;
 import com.zetsubou_0.parser.model.type.PageType;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.util.List;
 
 public class ParserRunner implements Runnable {
@@ -26,7 +28,7 @@ public class ParserRunner implements Runnable {
     @Inject
     private CategoryProcessor categoryProcessor;
     @Inject
-    private TaskExecutor taskExecutor;
+    private CsvWriter csvWriter;
 
     @Inject
     public ParserRunner(ApplicationConfiguration configuration) {
@@ -35,9 +37,17 @@ public class ParserRunner implements Runnable {
 
     @Override
     public void run() {
+        csvWriter.clearResults();
         for (Configuration configuration : CONFIGURATIONS) {
             configuration.setName(fileRootPath + "/" + configuration.getName());
             categoryProcessor.processEachCategory(configuration);
+        }
+        try {
+            Thread.currentThread().join(60 * 60 * 1000);
+            csvWriter.flushResults(fileRootPath + "/all.csv");
+        } catch (IOException | InterruptedException e) {
+            csvWriter.clearResults();
+            e.printStackTrace();
         }
     }
 }
