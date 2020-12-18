@@ -67,6 +67,8 @@ public class CategoryProcessorImpl implements CategoryProcessor {
             final Map<String, Set<DataItem>> writeData = builder.build();
             csvWriter.write(writeData);
             writeData.values()
+                    .stream()
+                    .filter(item -> !(item instanceof PriceDataItem))
                     .forEach(csvWriter::appendToResults);
         } catch (IOException e) {
             e.printStackTrace();
