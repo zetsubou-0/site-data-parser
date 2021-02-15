@@ -64,13 +64,30 @@ public class Table {
     private Consumer<Field> appendCell(ReflectionService reflectionService, DataItem dataItem, int rowIndex) {
         return field -> {
             final String header = reflectionService.getCsvFieldName(field);
+            if (!reflectionService.isMultiple(field)) {
+                final String cellText = escape(reflectionService.getFieldValue(field, dataItem, String.class));
+                appendCell(header, cellText, rowIndex).accept(field);
+                return;
+            }
+            final List<String> imagePaths = reflectionService.getFieldValue(field, dataItem, List.class);
+            if (imagePaths == null) {
+                return;
+            }
+            for (int i = 0; i < imagePaths.size(); i++) {
+                appendCell(header + "-" + (i + 1), escape(imagePaths.get(i)), rowIndex)
+                        .accept(field);
+            }
+        };
+    }
+
+    private Consumer<Field> appendCell(String header, String cellText, int rowIndex) {
+        return field -> {
             if (!headers.contains(header)) {
                 headers.add(header);
                 cells.put(header, new ArrayList<>());
             }
             maxRows = Math.max(maxRows, rowIndex + 2);
             maxColumns = Math.max(maxColumns, headers.indexOf(header) + 1);
-            final String cellText = escape(reflectionService.getFieldValue(field, dataItem, String.class));
             cells.get(header).add(Pair.of(rowIndex, cellText));
         };
     }

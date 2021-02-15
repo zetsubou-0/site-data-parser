@@ -7,10 +7,7 @@ import com.zetsubou_0.parser.adapter.AdapterFactory;
 import com.zetsubou_0.parser.adapter.DataItemAdapter;
 import com.zetsubou_0.parser.csv.CsvWriter;
 import com.zetsubou_0.parser.dom.CategoryProcessor;
-import com.zetsubou_0.parser.model.AbstractDataItem;
-import com.zetsubou_0.parser.model.Configuration;
-import com.zetsubou_0.parser.model.DataItem;
-import com.zetsubou_0.parser.model.PriceDataItem;
+import com.zetsubou_0.parser.model.*;
 import com.zetsubou_0.parser.model.type.PageType;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -64,6 +61,8 @@ public class CategoryProcessorImpl implements CategoryProcessor {
             if (conf.getPageType() == PageType.EXTERIOR_LIGHTING || conf.getPageType() == PageType.LED_LIGHTS) {
                 builder.put(new File(configuration.getName()).getParent() + "/all-prices" + EXTENSION, prices);
             }
+            final Set<DataItem> images = adaptToImageItems(dataItems);
+            builder.put(path + "-images" + EXTENSION, images);
             final Map<String, Set<DataItem>> writeData = builder.build();
             csvWriter.write(writeData);
             writeData.values()
@@ -83,8 +82,8 @@ public class CategoryProcessorImpl implements CategoryProcessor {
                 .collect(Collectors.toSet());
     }
 
-    private Set<DataItem> adaptToPriceItems(Set<DataItem> dataItems) {
-        final DataItemAdapter<PriceDataItem> adapter = adapterFactory.createAdapter(PriceDataItem.class);
+    private <T extends DataItem> Set<DataItem> adaptToItems(Set<DataItem> dataItems, Class<T> modelClass) {
+        final DataItemAdapter<T> adapter = adapterFactory.createAdapter(modelClass);
         if (adapter == null) {
             return Collections.emptySet();
         }
@@ -92,5 +91,13 @@ public class CategoryProcessorImpl implements CategoryProcessor {
                 .map(adapter::adaptTo)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
+    }
+
+    private Set<DataItem> adaptToPriceItems(Set<DataItem> dataItems) {
+        return adaptToItems(dataItems, PriceDataItem.class);
+    }
+
+    private Set<DataItem> adaptToImageItems(Set<DataItem> dataItems) {
+        return adaptToItems(dataItems, ImageDataItem.class);
     }
 }

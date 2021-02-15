@@ -18,4 +18,10 @@ public @interface CsvField {
      * @return field header
      */
     CharacteristicsType value() default CharacteristicsType.EMPTY;
+
+    /**
+     * Is multiple
+     * @return true if multiple
+     */
+    boolean multiple() default false;
 }

@@ -2,7 +2,9 @@ package com.zetsubou_0.parser.model;
 
 import com.zetsubou_0.parser.csv.CsvField;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public abstract class AbstractDataItem implements DataItem {
 
@@ -20,14 +22,18 @@ public abstract class AbstractDataItem implements DataItem {
     private final String description;
     @CsvField
     private final String image;
+    private final List<String> images;
     private final String price;
 
-    public AbstractDataItem(String type, String title, String description, String article, String image, String price) {
+    public AbstractDataItem(String type, String title, String description, String article, List<String> images, String price) {
         this.type = type;
         this.article = article;
         this.title = title;
         this.description = description;
-        this.image = image;
+        this.images = images;
+        this.image = Optional.ofNullable(images)
+                .map(imgs -> imgs.get(0))
+                .orElse(null);
         this.price = price;
     }
 
@@ -65,6 +71,10 @@ public abstract class AbstractDataItem implements DataItem {
         return price;
     }
 
+    public List<String> getImages() {
+        return images;
+    }
+
     public AbstractDataItem setCategory(String category) {
         this.category = category;
         return this;
@@ -75,17 +85,19 @@ public abstract class AbstractDataItem implements DataItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AbstractDataItem that = (AbstractDataItem) o;
-        return Objects.equals(type, that.type) &&
+        return Objects.equals(brand, that.brand) &&
+                Objects.equals(type, that.type) &&
                 Objects.equals(category, that.category) &&
                 Objects.equals(article, that.article) &&
                 Objects.equals(title, that.title) &&
                 Objects.equals(description, that.description) &&
                 Objects.equals(image, that.image) &&
+                Objects.equals(images, that.images) &&
                 Objects.equals(price, that.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, category, brand, article, title, description, image, price);
+        return Objects.hash(brand, type, category, article, title, description, image, images, price);
     }
 }

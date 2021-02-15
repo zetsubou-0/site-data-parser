@@ -4,9 +4,12 @@ import com.zetsubou_0.parser.dom.Helper;
 import com.zetsubou_0.parser.model.type.CharacteristicsType;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class HelperImpl implements Helper {
@@ -39,10 +42,12 @@ public class HelperImpl implements Helper {
     }
 
     @Override
-    public String extractImage(Element element, String selector) {
-        return getFirstBySelector(element, selector)
+    public List<String> extractImages(Element element, String selector) {
+        return Optional.ofNullable(element.select(selector))
+                .map(Elements::stream)
+                .orElseGet(Stream::empty)
                 .map(el -> el.absUrl(SRC))
-                .orElse(StringUtils.EMPTY);
+                .collect(Collectors.toList());
     }
 
     @Override

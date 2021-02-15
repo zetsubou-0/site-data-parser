@@ -79,4 +79,11 @@ public interface ReflectionService {
      * @return
      */
     String getCsvFieldName(Field field);
+
+    /**
+     * Check if value if the field multiple
+     * @param field
+     * @return
+     */
+    boolean isMultiple(Field field);
 }

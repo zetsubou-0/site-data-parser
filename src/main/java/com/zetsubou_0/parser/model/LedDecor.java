@@ -2,6 +2,7 @@ package com.zetsubou_0.parser.model;
 
 import com.zetsubou_0.parser.csv.CsvField;
 
+import java.util.List;
 import java.util.Objects;
 
 @DataItemModel
@@ -20,8 +21,8 @@ public class LedDecor extends AbstractLedProduct {
     @CsvField
     private String power;
 
-    public LedDecor(String type, String title, String description, String article, String image, String price) {
-        super(type, title, description, article, image, price);
+    public LedDecor(String type, String title, String description, String article, List<String> images, String price) {
+        super(type, title, description, article, images, price);
     }
 
     @Override

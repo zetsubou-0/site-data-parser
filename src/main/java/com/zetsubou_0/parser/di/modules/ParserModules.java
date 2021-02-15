@@ -8,6 +8,7 @@ import com.zetsubou_0.parser.TaskExecutor;
 import com.zetsubou_0.parser.adapter.AdapterFactory;
 import com.zetsubou_0.parser.adapter.DataItemAdapter;
 import com.zetsubou_0.parser.adapter.impl.AdapterFactoryImpl;
+import com.zetsubou_0.parser.adapter.impl.ImageAdapter;
 import com.zetsubou_0.parser.adapter.impl.PriceAdapter;
 import com.zetsubou_0.parser.backoff.BackOff;
 import com.zetsubou_0.parser.backoff.impl.BackOffImpl;
@@ -18,6 +19,7 @@ import com.zetsubou_0.parser.dom.impl.*;
 import com.zetsubou_0.parser.impl.FixedTaskExecutor;
 import com.zetsubou_0.parser.impl.SiteParserImpl;
 import com.zetsubou_0.parser.model.ApplicationConfiguration;
+import com.zetsubou_0.parser.model.ImageDataItem;
 import com.zetsubou_0.parser.model.PriceDataItem;
 import com.zetsubou_0.parser.model.type.PageType;
 
@@ -65,5 +67,6 @@ public class ParserModules extends AbstractModule {
         final MapBinder<Class, DataItemAdapter> categoryProcessors =
                 MapBinder.newMapBinder(this.binder(), Class.class, DataItemAdapter.class);
         categoryProcessors.addBinding(PriceDataItem.class).to(PriceAdapter.class);
+        categoryProcessors.addBinding(ImageDataItem.class).to(ImageAdapter.class);
     }
 }

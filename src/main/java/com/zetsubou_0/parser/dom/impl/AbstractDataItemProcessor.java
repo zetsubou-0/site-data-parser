@@ -8,10 +8,12 @@ import com.zetsubou_0.parser.model.DataItem;
 import com.zetsubou_0.parser.model.DataItemModel;
 import com.zetsubou_0.parser.model.type.CharacteristicsType;
 import com.zetsubou_0.parser.model.type.PageType;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jsoup.nodes.Element;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.function.Consumer;
 
 public abstract class AbstractDataItemProcessor<T extends DataItem> implements DataItemProcessor {
@@ -37,12 +39,12 @@ public abstract class AbstractDataItemProcessor<T extends DataItem> implements D
         try {
             final T item = reflectionService.construct(
                     itemClass,
-                    pageType.getType(),
-                    helper.extractText(element, CharacteristicsType.TITLE.getSelector()),
-                    helper.extractText(element, CharacteristicsType.DESCRIPTION.getSelector()),
-                    helper.extractText(element, CharacteristicsType.ARTICLE.getSelector()).replaceAll(".*?\\s*:\\s*(.*?)\\s*", "$1"),
-                    helper.extractImage(element, CharacteristicsType.IMAGE.getSelector()),
-                    element.select(CharacteristicsType.PRICE.getSelector()).attr(CONTENT)
+                    Pair.of(String.class, pageType.getType()),
+                    Pair.of(String.class, helper.extractText(element, CharacteristicsType.TITLE.getSelector())),
+                    Pair.of(String.class, helper.extractText(element, CharacteristicsType.DESCRIPTION.getSelector())),
+                    Pair.of(String.class, helper.extractText(element, CharacteristicsType.ARTICLE.getSelector()).replaceAll(".*?\\s*:\\s*(.*?)\\s*", "$1")),
+                    Pair.of(List.class, helper.extractImages(element, CharacteristicsType.IMAGE.getSelector())),
+                    Pair.of(String.class, element.select(CharacteristicsType.PRICE.getSelector()).attr(CONTENT))
             );
             return setupSpecificationsData(element, item);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {

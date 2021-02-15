@@ -125,4 +125,11 @@ public class ReflectionServiceImpl implements ReflectionService {
                 : characteristicsType;
     }
 
+    @Override
+    public boolean isMultiple(Field field) {
+        return Optional.ofNullable(field)
+                .map(f -> f.getAnnotation(CsvField.class))
+                .map(CsvField::multiple)
+                .orElse(false);
+    }
 }

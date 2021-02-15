@@ -3,6 +3,7 @@ package com.zetsubou_0.parser.dom;
 import com.zetsubou_0.parser.model.type.CharacteristicsType;
 import org.jsoup.nodes.Element;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -49,7 +50,7 @@ public interface Helper {
      * @param selector DOM selector
      * @return find and return image from the element by selector
      */
-    String extractImage(Element element, String selector);
+    List<String> extractImages(Element element, String selector);
 
     /**
      * Extract link from first occurrence
