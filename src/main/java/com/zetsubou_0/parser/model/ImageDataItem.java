@@ -4,6 +4,7 @@ import com.zetsubou_0.parser.csv.CsvField;
 import com.zetsubou_0.parser.model.type.CharacteristicsType;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ImageDataItem implements DataItem {
 
@@ -47,5 +48,20 @@ public class ImageDataItem implements DataItem {
     @Override
     public String getPrice() {
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ImageDataItem that = (ImageDataItem) o;
+        return Objects.equals(brand, that.brand) &&
+                Objects.equals(article, that.article) &&
+                Objects.equals(images, that.images);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(brand, article, images);
     }
 }

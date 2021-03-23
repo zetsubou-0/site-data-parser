@@ -47,6 +47,7 @@ public class HelperImpl implements Helper {
                 .map(Elements::stream)
                 .orElseGet(Stream::empty)
                 .map(el -> el.absUrl(SRC))
+                .filter(StringUtils::isNotEmpty)
                 .collect(Collectors.toList());
     }
 
